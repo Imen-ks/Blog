@@ -1,0 +1,36 @@
+#extend("base"):
+    #export("content"):
+        <div class="container mt-3">
+            <h1 class="display-5">#(title)</h1>
+            #if(message):
+                <div class="alert alert-danger" role="alert">
+                    Please fix the following errors:<br />
+                    #(message)
+                </div>
+            #endif
+            <form method="post">
+                <div class="mb-3">
+                    <label for="firstName">First Name</label>
+                    <input type="text" name="firstName" class="form-control" id="firstName" value="#(user.firstName)"/>
+                </div>
+                <div class="mb-3">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" name="lastName" class="form-control" id="lastName" value="#(user.lastName)"/>
+                </div>
+                <div class="mb-3">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" class="form-control" id="username" value="#(user.username)"/>
+                </div>
+                <div class="mb-3">
+                    <label for="email">Username</label>
+                    <input type="text" name="email" class="form-control" id="email" value="#(user.email)"/>
+                </div>
+                <button type="submit" class="btn btn-info me-2">
+                    Submit
+                </button>
+                <a class="btn btn-outline-secondary" href="/profile"
+                    role="button">Cancel</a>
+            </form>
+        </div>
+    #endexport
+#endextend

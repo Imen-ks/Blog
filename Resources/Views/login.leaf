@@ -1,0 +1,26 @@
+#extend("base"):
+    #export("content"):
+        <div class="container mt-3">
+            <h1 class="display-5 mb-4">#(title)</h1>
+            #if(loginError):
+                <div class="alert alert-danger" role="alert">
+                    Authentication error. Either your username or
+                    password is invalid.
+                </div>
+            #endif
+            <form method="post">
+                <div class="mb-3">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" class="form-control" id="username" required/>
+                </div>
+                <div class="mb-3">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" class="form-control" id="password" required/>
+                </div>
+                <button id="login-button" type="submit" class="btn btn-outline-info">
+                    Log In
+                </button>
+            </form>
+        </div>
+    #endexport
+#endextend

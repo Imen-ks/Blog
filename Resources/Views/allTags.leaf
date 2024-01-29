@@ -1,0 +1,21 @@
+#extend("base"):
+    #export("content"):
+        <div class="container mt-3">
+            <h1 class="display-5">Tags list</h1>
+            <h1 class="lead text-muted">Click on a tag to see related articles</h1>
+            #if(count(tags) > 0):
+                <div class="row mt-4">
+                    #for(tag in tags):
+                        <div class="d-grid gap-2 col-3 mx-auto my-2">
+                            <a class="btn btn-outline-info" href="/tags/#(tag.id)">
+                                #(tag.name)
+                            </a>
+                        </div>
+                    #endfor
+                </div>
+            #else:
+                <h2>There aren’t any tags yet!</h2>
+            #endif
+        </div>
+    #endexport
+#endextend

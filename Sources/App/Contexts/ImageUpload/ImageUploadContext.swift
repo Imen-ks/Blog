@@ -1,11 +1,17 @@
 //
-//  File.swift
-//  
+//  ImageUploadContext.swift
 //
-//  Created by Imen Ksouri on 26/01/2024.
+//
+//  Created by Imen Ksouri on 18/01/2024.
 //
 
 import Foundation
+import Vapor
+
+enum PictureType: String {
+    case profile
+    case article
+}
 
 struct ImageUploadContext: Encodable {
     let title: String
@@ -13,5 +19,9 @@ struct ImageUploadContext: Encodable {
     let reference: String
     let currentImage: String?
     let userLoggedIn: Bool
-    let acronymId: String?
+    let articleId: String?
+}
+
+struct ImageUploadData: Content {
+    let picture: Data
 }

@@ -1,12 +1,14 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-
-  <title>#(title)</title>
-</head>
-
-<body>
-  <h1>#(title)</h1>
-</body>
-</html>
+#extend("base"):
+    #export("content"):
+        <div class="col-md-12">
+            <img
+            src="/images/blogBanner.png"
+            class="img-fluid mx-auto d-block"
+            alt="Blog Logo"/>
+        </div>
+        <div class="container mt-3">
+            <h1 class="display-5">Latest articles</h1>
+            #extend("articleCards")
+        </div>
+    #endexport
+#endextend

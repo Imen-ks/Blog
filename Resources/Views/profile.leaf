@@ -1,0 +1,97 @@
+#extend("base"):
+    #export("content"):
+        <div class="container mt-3">
+            <div class="row">
+                <div class="col-lg-6 col-md-12">
+                    <h1 class="display-5 text-center">Profile details</h1>
+                    <div class="d-flex p-2 my-4 align-items-center border rounded justify-content-evenly">
+                        #if(user.profilePicture):
+                            <img
+                            src="/images/profilepictures/#(user.profilePicture)"
+                            class="img-thumbnail rounded-circle me-4"
+                            style="width: 15rem; height: 15rem"
+                            alt="Profile Picture">
+                        #else:
+                            <img
+                            src="/images/profilepictures/anonymous.jpg"
+                            class="img-thumbnail rounded-circle me-4"
+                            style="width: 15rem; height: 15rem"
+                            alt="Profile Picture">
+                        #endif
+                        <div>
+                            <h1 class="display-6">#(user.username)</h1>
+                            <a href="/users/#(user.id)/addProfilePicture" class="btn btn-outline-info" role="button">
+                                #if(user.profilePicture):
+                                Update
+                                #else:
+                                Add
+                                #endif
+                                Profile Picture
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="d-flex border-bottom justify-content-between">
+                            <h1 class="lead py-2">First Name:</h1>
+                            <h1 class="lead py-2">#(user.firstName)</h1>
+                        </div>
+                        <div class="d-flex border-bottom justify-content-between">
+                            <h1 class="lead py-2">Last Name:</h1>
+                            <h1 class="lead py-2">#(user.lastName)</h1>
+                        </div>
+                        <div class="d-flex border-bottom justify-content-between">
+                            <h1 class="lead py-2">Email:</h1>
+                            <h1 class="lead py-2">#(user.email)</h1>
+                        </div>
+                    </div>
+                    <a class="btn btn-outline-secondary d-grid gap-2 col-6 mx-auto mb-3" href="/profile/edit"
+                        role="button">Edit personal info</a>
+                    <form method="post" action="/profile/changePassword">
+                        <button type="button" class="btn btn-outline-secondary d-grid gap-2 col-6 mx-auto mb-4" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                            Change password
+                        </button>
+                        <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="changePasswordModalLabel">Enter new password</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cancel"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="password" name="password" class="form-control" id="password" required/>
+                                        <p class="mt-2">Once you click on <small class="text-muted">Save Changes</small>, you'll be logged out. Sign in with your new password to be logged in again.</p>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-outline-info">Save changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <form>
+                            #if(message):
+                                <div class="alert alert-danger mt-4" role="alert">
+                                    Please fix the following errors:<br />
+                                    #(message)
+                                </div>
+                            #endif
+                        </div>
+                <div class="col-lg-6 col-md-12">
+                    <h1 class="display-5 text-center">Activity</h1>
+                    <div class="row">
+                        <img
+                        src="/images/blogBanner.png"
+                        class="img-fluid mx-auto d-block my-3"
+                        alt="Blog Logo" />
+                        <div class="d-grid gap-2 col-6 mx-auto">
+                            <a href="/users/#(user.id)" class="btn btn-outline-info">See your articles</a>
+                        </div>
+                        <div class="d-grid gap-2 col-6 mx-auto">
+                            <a href="/users/#(user.id)/comments" class="btn btn-outline-info">See your comments</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    #endexport
+#endextend

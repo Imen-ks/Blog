@@ -1,0 +1,49 @@
+#extend("base"):
+    #export("content"):
+        <div class="container mt-3">
+            <h1 class="display-5">#(title)</h1>
+            #if(pictureType == "profile"):
+                #if(currentImage):
+                    <img
+                    src="/images/profilepictures/#(currentImage)"
+                    class="img-thumbnail rounded-circle me-4"
+                    style="width: 15rem; height: 15rem"
+                    alt="Profile Picture">
+                #else:
+                    <img
+                    src="/images/profilepictures/anonymous.jpg"
+                    class="img-thumbnail rounded-circle me-4"
+                    style="width: 15rem; height: 15rem"
+                    alt="Profile Picture">
+                #endif
+            #elseif(pictureType == "article"):
+                #if(currentImage):
+                    <img
+                    src="/images/articlepictures/#(currentImage)"
+                    class="img-thumbnail rounded"
+                    style="width: 15rem"
+                    alt="Article Picture">
+                #else:
+                    <img
+                    src="/images/articlepictures/noPicture.jpg"
+                    class="img-thumbnail rounded"
+                    style="width: 15rem"
+                    alt="Article Picture">
+                #endif
+            #endif
+            <form method="post" enctype="multipart/form-data">
+                <div class="my-3">
+                    <label for="picture" class="form-label lead text-muted">
+                        Select New Picture for <strong>#(reference)</strong>
+                    </label>
+                    <input type="file" name="picture" class="form-control" id="picture" required/>
+                </div>
+                <button type="submit" class="btn btn-info me-2">
+                    Upload
+                </button>
+                <a class="btn btn-outline-secondary" href="#if(articleId): /articles/#(articleId) #else: /profile #endif"
+                    role="button">Cancel</a>
+            </form>
+        </div>
+    #endexport
+#endextend

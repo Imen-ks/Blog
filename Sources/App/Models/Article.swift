@@ -1,5 +1,5 @@
 //
-//  Acronym.swift
+//  Article.swift
 //
 //
 //  Created by Imen Ksouri on 08/12/2023.
@@ -9,65 +9,65 @@ import Foundation
 import Vapor
 import Fluent
 
-final class Acronym: Model {
-    static let schema = Acronym.schemaName
-  
-  @ID(key: .id)
-  var id: UUID?
+final class Article: Model {
+    static let schema = Article.schemaName
 
-  @Field(key: Acronym.short)
-  var short: String
-  
-  @Field(key: Acronym.long)
-  var long: String
-    
-  @OptionalField(key: Acronym.picture)
-  var picture: String?
+    @ID(key: .id)
+    var id: UUID?
 
-  @Parent(key: Acronym.userID)
-  var user: User
+    @Field(key: Article.title)
+    var title: String
 
-  @Siblings(
-    through: AcronymCategoryPivot.self,
-    from: \.$acronym,
-    to: \.$category)
-  var categories: [Category]
+    @Field(key: Article.description)
+    var description: String
 
-  @Children(for: \.$acronym)
-  var comments: [Comment]
+    @OptionalField(key: Article.picture)
+    var picture: String?
 
-  @Timestamp(key: Acronym.createdAt, on: .create)
-  var createdAt: Date?
+    @Parent(key: Article.userID)
+    var user: User
 
-  @Timestamp(key: Acronym.updatedAt, on: .update)
-  var updatedAt: Date?
+    @Siblings(
+        through: ArticleTagPivot.self,
+        from: \.$article,
+        to: \.$tag)
+    var tags: [Tag]
 
-  init() {}
-  
-  init(
-    id: UUID? = nil,
-    short: String,
-    long: String,
-    picture: String? = nil,
-    userID: User.IDValue
-  ) {
-    self.id = id
-    self.short = short
-    self.long = long
-    self.picture = picture
-    self.$user.id = userID
-  }
+    @Children(for: \.$article)
+    var comments: [Comment]
+
+    @Timestamp(key: Article.createdAt, on: .create)
+    var createdAt: Date?
+
+    @Timestamp(key: Article.updatedAt, on: .update)
+    var updatedAt: Date?
+
+    init() {}
+
+    init(
+        id: UUID? = nil,
+        title: String,
+        description: String,
+        picture: String? = nil,
+        userID: User.IDValue
+    ) {
+        self.id = id
+        self.title = title
+        self.description = description
+        self.picture = picture
+        self.$user.id = userID
+    }
 }
 
-extension Acronym: Content {}
+extension Article: Content {}
 
-extension Acronym {
-    static let schemaName = "acronyms"
+extension Article {
+    static let schemaName = "articles"
     static let id = FieldKey(stringLiteral: "id")
-    static let short = FieldKey(stringLiteral: "short")
-    static let long = FieldKey(stringLiteral: "long")
+    static let title = FieldKey(stringLiteral: "title")
+    static let description = FieldKey(stringLiteral: "description")
     static let picture = FieldKey(stringLiteral: "picture")
-    static let userID = FieldKey(stringLiteral: "userID")
+    static let userID = FieldKey(stringLiteral: "user_ID")
     static let createdAt = FieldKey(stringLiteral: "created_at")
     static let updatedAt = FieldKey(stringLiteral: "updated_at")
 }

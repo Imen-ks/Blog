@@ -1,0 +1,42 @@
+#if(count(articles) > 0):
+    <div class="row mt-4">
+        #for(article in articles):
+            <div class="col-lg-3 col-md-6">
+                <div class="card mb-3 mx-2 border border-secondary border-1"
+                    style="height: 25rem">
+                    #if(article.picture):
+                        <img
+                        src="/images/articlePictures/#(article.picture)"
+                        class="img-fluid mb-2"
+                        style="height: 12.5rem"
+                        alt="Article Picture" />
+                    #else:
+                        <img
+                        src="/images/articlePictures/noPicture.jpg"
+                        class="img-fluid mb-2"
+                        style="height: 12.5rem"
+                        alt="Article Picture" />
+                    #endif
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-muted"
+                            style="-webkit-line-clamp: 4; display: -webkit-box;
+                                    -webkit-box-orient: vertical; overflow: hidden;">
+                                    #(article.title)
+                        </h5>
+                        <a href="/articles/#(article.id)" class="btn btn-outline-secondary mt-auto align-self-end">
+                            Read
+                        </a>
+                    </div>
+                </div>
+            </div>
+        #endfor
+    </div>
+#else:
+    #if(title != "Search"):
+        #if(title == "My Articles"):
+            <h1 class="lead text-muted">You haven't written any articles yet.</h1>
+        #else:
+            <h1 class="lead text-muted">There aren’t any articles to display.</h1>
+        #endif
+    #endif
+#endif

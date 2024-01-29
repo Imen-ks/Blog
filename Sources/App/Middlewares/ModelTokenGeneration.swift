@@ -21,31 +21,23 @@ extension ModelTokenGeneration {
     ) -> Middleware {
         ModelTokenGenerator<Self.User>(database: database)
     }
-
+    
     var _$user: Parent<User> {
         self[keyPath: Self.userKey]
     }
 }
 
 private struct ModelTokenGenerator<User>: RequestTokenGenerator where User: Authenticatable {
-
+    
     public let database: DatabaseID?
-
+    
     func tokenGenerator(request: Request) -> EventLoopFuture<String> {
-        guard let userId = request.session.data[SessionDataVariable.userId] else {
-            return request.eventLoop.future("")
+        return request.redis.get(CacheConstants.token, asJSON: Token.self).flatMap { token in
+            guard let token = token else {
+                return request.eventLoop.future("")
+            }
+            return request.eventLoop.future(token.value)
         }
-        let db = request.db(self.database)
-        return Token.query(on: db)
-                .all()
-                .flatMapThrowing { tokens in
-                    let filteredTokens = tokens.filter { $0._$user.id.uuidString == userId }
-                    let token = filteredTokens.first
-                    guard let token = token else {
-                        return ""
-                    }
-                    return token.value
-                }
     }
 }
 

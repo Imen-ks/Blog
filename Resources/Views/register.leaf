@@ -1,0 +1,47 @@
+#extend("base"):
+    #export("content"):
+        <div class="container mt-3">
+            <h1 class="display-5 mb-4">Registration Form</h1>
+            #if(!message):
+                <div class="alert alert-info" role="alert">
+                    <ul class="list-unstyled">
+                        <li>Register validation:
+                            <ul>
+                                <li>the username must contain only alphanumeric characters and be at least 3 characters long</li>
+                                <li>the password must be at least 8 characters long</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            #else:
+                <div class="alert alert-danger" role="alert">
+                    Please fix the following errors:<br />
+                    #(message)
+                </div>
+            #endif
+            <form method="post">
+                <div class="mb-3">
+                    <label for="firstName">First Name</label>
+                    <input type="text" name="firstName" class="form-control" id="firstName" required/>
+                </div>
+                <div class="mb-3">
+                    <label for="lastName">Last Name</label>
+                    <input type="text" name="lastName" class="form-control" id="lastName" required/>
+                </div>
+                <div class="mb-3">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" class="form-control" id="username" required/>
+                </div>
+                <div class="mb-3">
+                    <label for="password">Password</label>
+                    <input type="password" name="password" class="form-control" id="password" required/>
+                </div>
+                <div class="mb-3">
+                    <label for="email">Email Address</label>
+                    <input type="email" name="email" class="form-control" id="email" required/>
+                </div>
+                <button type="submit" class="btn btn-outline-info">Register</button>
+            </form>
+        </div>
+    #endexport
+#endextend

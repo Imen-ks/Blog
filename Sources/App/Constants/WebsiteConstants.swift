@@ -44,7 +44,7 @@ enum WebsitePath: String {
     // WebRegisterController
     case register
 
-    // WebLoginController
+    // WebAuthController
     case login
     case logout
     
@@ -52,7 +52,6 @@ enum WebsitePath: String {
     case users
     case userId
     case profile
-//    case profilePicture
     case addProfilePicture
     case changePassword
 
@@ -127,10 +126,10 @@ struct WebsiteView {
     static let userComments = (leafRenderer: "userComments", title: "My Comments")
     static let index = (leafRenderer: "index", title: "Home page")
     static let article = (leafRenderer: "article", title: "")
-    static let createArticle = (leafRenderer: "createArticle", title: "Create An Article")
+    static let createArticle = (leafRenderer: "createArticle", title: "Write An Article")
     static let addArticlePicture = (leafRenderer: "addPicture", title: "Update Article Picture")
     static let editArticle = (leafRenderer: "createArticle", title: "Edit Article")
     static let searchArticle = (leafRenderer: "search", title: "Search")
     static let allTags = (leafRenderer: "allTags", title: "Tags")
-    static let category = (leafRenderer: "category", title: "")
+    static let tag = (leafRenderer: "tag", title: "")
 }

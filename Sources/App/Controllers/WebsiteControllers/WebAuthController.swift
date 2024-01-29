@@ -18,7 +18,7 @@ struct WebAuthController: RouteCollection {
         credentialsAuthRoutes.post(WebsitePath.login.component, use: loginPostHandler)
         authSessionsRoutes.post(WebsitePath.logout.component, use: logoutHandler)
     }
-    
+
     func loginHandler(_ req: Request) -> EventLoopFuture<View> {
         let context: LoginContext
         if let error = req.query[Bool.self, at: "error"], error {
@@ -28,7 +28,7 @@ struct WebAuthController: RouteCollection {
         }
         return req.view.render(WebsiteView.login.leafRenderer, context)
     }
-    
+
     func loginPostHandler(_ req: Request) throws -> EventLoopFuture<Response> {
         let credentials = try req.content.decode(Credentials.self)
         let uri = URI(string: "\(ApiEndpoint.users.url)/\(ApiPath.login.rawValue)")
@@ -41,15 +41,28 @@ struct WebAuthController: RouteCollection {
                 return req.view.render(WebsiteView.login.leafRenderer, context).encodeResponse(for: req)
             }
             let token = try clientResponse.content.decode(Token.self)
-            let userId = token.$user.id.uuidString
-            req.session.data[SessionDataVariable.userId] = userId
+            req.redis.set(CacheConstants.token, toJSON: token).whenComplete { result in
+                switch result {
+                case .success:
+                    print("User logged in and token successfully cached.")
+                case .failure(let error):
+                    print("Error while caching token: \(error).")
+                }
+            }
             return req.eventLoop.future(req.redirect(to: WebsiteHostUrl.root))
         }.flatMap { response in return response}
     }
-    
+
     func logoutHandler(_ req: Request) -> Response {
-        req.session.data[SessionDataVariable.userId] = nil
         req.auth.logout(User.self)
+        req.redis.delete(CacheConstants.token).whenComplete { result in
+            switch result {
+            case .success:
+                print("User logged out and token successfully removed from cache.")
+            case .failure(let error):
+                print("Error while removing token from cache: \(error).")
+            }
+        }
         return req.redirect(to: WebsiteHostUrl.root)
     }
 }

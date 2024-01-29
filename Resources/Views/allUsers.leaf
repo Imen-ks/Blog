@@ -1,0 +1,43 @@
+#extend("base"):
+    #export("content"):
+        <div class="container mt-3">
+            <h1 class="display-5">Authors list</h1>
+            <div class="row mt-4">
+                #if(count(users) > 0):
+                    #for(user in users):
+                        <div class="col-lg-6 col-md-12">
+                            <div class="d-flex p-2 mb-2 align-items-center shadow border rounded">
+                                <div class="flex-shrink-0">
+                                    #if(user.profilePicture):
+                                        <img
+                                        src="/images/profilePictures/#(user.profilePicture)"
+                                        class="img-thumbnail rounded-circle"
+                                        style="width: 5rem; height: 5rem"
+                                        alt="Profile Picture">
+                                    #else:
+                                        <img 
+                                        src="/images/profilePictures/anonymous.jpg"
+                                        class="img-thumbnail rounded-circle"
+                                        style="width: 5rem; height: 5rem"
+                                        alt="Profile Picture">
+                                    #endif
+                                </div>
+                                <div class="flex-grow-1 ms-3 text-muted my-auto">
+                                    <h4>#(user.username)</h4>
+                                    <em>joined on #date(user.createdAt, "yyyy-MM-dd")</em>
+                                </div>
+                                <div class="flex-grow-3 ms-3">
+                                    <a href="/users/#(user.id)" class="btn btn-outline-info"  role="button">
+                                        See Articles
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    #endfor
+                #else:
+                    <h1 class="lead text-muted">There aren’t any authors yet.</h1>
+                #endif
+            </div>
+        </div>
+    #endexport
+#endextend

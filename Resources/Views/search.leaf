@@ -1,0 +1,14 @@
+#extend("base"):
+    #export("content"):
+        <div class="container mt-3">
+            <h1 class="display-5">#(title)</h1>
+            <form>
+                <div class="input-group mb-4">
+                    <input type="search" name="term" class="form-control rounded" placeholder="Search in Articles" aria-label="Search" aria-describedby="search-addon" required/>
+                    <button type="submit" class="btn btn-outline-info" data-mdb-ripple-init>search</button>
+                </div>
+            </form>
+            #extend("articleCards")
+        </div>
+    #endexport
+#endextend

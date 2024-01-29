@@ -1,5 +1,5 @@
 //
-//  AcronymCategoryPivot.swift
+//  ArticleTagPivot.swift
 //
 //
 //  Created by Imen Ksouri on 11/12/2023.
@@ -8,34 +8,34 @@
 import Foundation
 import Fluent
 
-final class AcronymCategoryPivot: Model {
-  static let schema = AcronymCategoryPivot.schemaName
-  
-  @ID(key: .id)
-  var id: UUID?
-  
-  @Parent(key: AcronymCategoryPivot.acronymID)
-  var acronym: Acronym
-  
-  @Parent(key: AcronymCategoryPivot.categoryID)
-  var category: Category
-  
-  init() {}
-  
-  init(
-    id: UUID? = nil,
-    acronym: Acronym,
-    category: Category
-  ) throws {
-    self.id = id
-    self.$acronym.id = try acronym.requireID()
-    self.$category.id = try category.requireID()
-  }
+final class ArticleTagPivot: Model {
+    static let schema = ArticleTagPivot.schemaName
+
+    @ID(key: .id)
+    var id: UUID?
+
+    @Parent(key: ArticleTagPivot.articleID)
+    var article: Article
+
+    @Parent(key: ArticleTagPivot.tagID)
+    var tag: Tag
+
+    init() {}
+
+    init(
+        id: UUID? = nil,
+        articleID: Article.IDValue,
+        tagID: Tag.IDValue
+    ) throws {
+        self.id = id
+        self.$article.id = articleID
+        self.$tag.id = tagID
+    }
 }
 
-extension AcronymCategoryPivot {
-    static let schemaName = "acronym-category-pivot"
+extension ArticleTagPivot {
+    static let schemaName = "article_tag_pivot"
     static let id = FieldKey(stringLiteral: "id")
-    static let acronymID = FieldKey(stringLiteral: "acronymID")
-    static let categoryID = FieldKey(stringLiteral: "categoryID")
+    static let articleID = FieldKey(stringLiteral: "article_ID")
+    static let tagID = FieldKey(stringLiteral: "tag_ID")
 }

@@ -1,0 +1,8 @@
+#extend("base"):
+    #export("content"):
+        <div class="container mt-3">
+            <h1>#(tag.name)</h1>
+            #extend("articleCards")
+        </div>
+    #endexport
+#endextend

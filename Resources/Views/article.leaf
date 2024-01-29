@@ -1,0 +1,104 @@
+#extend("base"):
+    #export("content"):
+        <div class="container mt-4">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-12">
+                    <figure class="figure">
+                        #if(article.picture):
+                            <img
+                            src="/images/articlePictures/#(article.picture)"
+                            class="figure-img img-fluid rounded-3"
+                            alt="Article Picture" />
+                        #else:
+                            <img
+                            src="/images/articlePictures/noPicture.jpg"
+                            class="figure-img img-fluid rounded-3"
+                            alt="Article Picture" />
+                        #endif
+                        #if(article.createdAt == article.updatedAt):
+                            <figcaption class="figure-caption">Posted on #date(article.createdAt, "yyyy-MM-dd")</figcaption>
+                        #else:
+                            <figcaption class="figure-caption">Updated on #date(article.updatedAt, "yyyy-MM-dd")</figcaption>
+                        #endif
+                    </figure>
+                    <p class="lead">Written by <a href="/users/#(user.id)/">#(user.username)</a></p>
+                    #if(count(tags) > 0):
+                        <div class="d-flex flex-wrap mb-2">
+                            #for(tag in tags):
+                                <a href="/tags/#(tag.id)"><span class="badge rounded-pill bg-info text-dark me-2 my-2">#(tag.name)</span></a>
+                            #endfor
+                        </div>
+                    #endif
+                    <h1 class="display-6 mb-4">#(article.title)</h1>
+                    #if(userLoggedIn && userIsAuthor):
+                        <form method="post" action="/articles/#(article.id)/delete">
+                            <a class="btn btn-outline-secondary me-1" href="/articles/#(article.id)/edit"
+                                role="button">Edit</a>
+                            <a href="/articles/#(article.id)/addArticlePicture" class="btn btn-outline-secondary me-1" role="button">
+                                #if(article.picture):
+                                Update
+                                #else:
+                                Add
+                                #endif
+                                Picture
+                            </a>
+                            <input class="btn btn-outline-danger" type="submit" value="Delete" />
+                        </form>
+                    #endif
+                    #if(userLoggedIn && !userIsAuthor):
+                        <form method="post" action="/articles/#(article.id)/comments">
+                            <div class="form-floating mt-4">
+                                <textarea type="text" name="comment" id="comment" class="form-control" style="height: 7.5rem"></textarea>
+                                <label for="comment">Leave a comment</label>
+                            </div>
+                            <div class="mt-2">
+                                <button class="btn btn-outline-secondary float-end d-grid gap-2 col-2" type="submit">Post<button/>
+                            </div>
+                        </form>
+                    #endif
+                    #if(count(comments) > 0):
+                        <div class="accordion my-4" id="accordionComments">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="heading">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseComments" aria-expanded="true" aria-controls="collapseComments">
+                                        Comments
+                                    </button>
+                                </h2>
+                                <div id="collapseComments" class="accordion-collapse collapse show" aria-labelledby="heading" data-bs-parent="#accordionComments">
+                                    <div class="accordion-body">
+                                        #for(comment in comments):
+                                        <div class="d-inline-flex py-2">
+                                            <div class="flex-shrink-0">
+                                                #if(comment.author.profilePicture):
+                                                <img src="/images/profilePictures/#(comment.author.profilePicture)"
+                                                    class="img-thumbnail rounded-circle"
+                                                    style="width: 5rem"
+                                                    alt="Profile Picture">
+                                                    #else:
+                                                    <img src="/images/profilePictures/anonymous.jpg"
+                                                        class="img-thumbnail rounded-circle"
+                                                        style="width: 5rem"
+                                                        alt="Profile Picture">
+                                                        #endif
+                                                    </div>
+                                            <div class="flex-grow-1 ms-3">
+                                                <h5>#(comment.author.username) <small class="text-muted"><i>Posted on #date(comment.createdAt, "yyyy-MM-dd HH:mm") </i></small></h5>
+                                                <p>#(comment.description)</p>
+                                            </div>
+                                        </div>
+                                        #endfor
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    #else:
+                        <p class="lead text-muted mt-4">This article has no comments yet.</p>
+                    #endif
+                </div>
+                <div class="col-lg-6 col-md-12 lead">
+                    <p>#markdown(article.description)</p>
+                </div>
+            </div>
+        </div>
+    #endexport
+#endextend

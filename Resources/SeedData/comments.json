@@ -1,6 +1,6 @@
 [
     {
-        "id": "6B7C7D11-2592-494D-85E1-AAAE920CF1C7",
+        "id": null,
         "description": "Leaf is a powerful templating language. I used it along with Bootstrap to style my website and make it responsive. In addition, the Leaf Markdown package provides an easy-to-use markdown renderer for Vapor.",
         "author": {
             "id": "1BC36B40-2199-4300-A38D-6BCDF1FF7E64"
@@ -8,17 +8,17 @@
         "article": {
             "id": "98F8DF40-D111-4E41-A946-33FB6663F59C",
         },
-        "createdAt": "2024-01-27T00:52:17Z"
+        "createdAt": null
     },
     {
-        "id": "57F03138-6E6B-472B-A4C5-24362FF0A720",
+        "id": null,
         "description": "I decided to go for Vapor for my web project. I really like the way it’s written and deployment to Heroku is super easy. I strongly recommend.",
         "author": {
             "id": "1BC36B40-2199-4300-A38D-6BCDF1FF7E64"
         },
         "article": {
             "id": "31B9718F-B385-4107-A262-C66FB5DD0F66",
-        }
-        "createdAt": "2024-01-27T00:52:17Z"
+        },
+        "createdAt": null
     }
 ]

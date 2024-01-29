@@ -1,0 +1,28 @@
+#extend("base"):
+    #export("content"):
+        <div class="container mt-3">
+            #if(title == "My Articles"):
+                <h1 class="display-5">#(title)</h1>
+            #else:
+                <div class="d-flex align-items-center">
+                    <h1 class="display-6 pe-4">Articles written by</h1>
+                    #if(user.profilePicture):
+                        <img
+                        src="/images/profilepictures/#(user.profilePicture)"
+                        class="img-thumbnail rounded-circle"
+                        style="width: 5rem"
+                        alt="Profile Picture">
+                    #else:
+                        <img
+                        src="/images/profilepictures/anonymous.jpg"
+                        class="img-thumbnail rounded-circle"
+                        style="width: 5rem"
+                        alt="Profile Picture">
+                    #endif
+                    <strong class="lead text-muted ps-2">#(user.username)</strong>
+                </div>
+            #endif
+            #extend("articleCards")
+        </div>
+    #endexport
+#endextend

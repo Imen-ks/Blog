@@ -1,0 +1,137 @@
+[
+    {
+        "id": null,
+        "article": {
+            "id": "F50C1005-4825-495C-B1DE-78A717D87080"
+        },
+        "tag": {
+            "id": "6AA76E29-ED8B-4B87-A182-87C7B3700E37"
+        }
+    },
+    {
+        "id": null,
+        "article": {
+            "id": "F50C1005-4825-495C-B1DE-78A717D87080"
+        },
+        "tag": {
+            "id": "4282DDA7-D2F3-455D-86C7-A58B83BDEF35"
+        }
+    },
+    {
+        "id": null,
+        "article": {
+            "id": "F50C1005-4825-495C-B1DE-78A717D87080"
+        },
+        "tag": {
+            "id": "F39FF292-C38B-40D2-B221-A5E58716E68A"
+        }
+    },
+    {
+        "id": null,
+        "article": {
+            "id": "F50C1005-4825-495C-B1DE-78A717D87080"
+        },
+        "tag": {
+            "id": "D1C5A9CE-0607-469F-9943-92A20A9C0B1A"
+        }
+    },
+    {
+        "id": null,
+        "article": {
+            "id": "98F8DF40-D111-4E41-A946-33FB6663F59C"
+        },
+        "tag": {
+            "id": "6AA76E29-ED8B-4B87-A182-87C7B3700E37"
+        }
+    },
+    {
+        "id": null,
+        "article": {
+            "id": "98F8DF40-D111-4E41-A946-33FB6663F59C"
+        },
+        "tag": {
+            "id": "4282DDA7-D2F3-455D-86C7-A58B83BDEF35"
+        }
+    },
+    {
+        "id": null,
+        "article": {
+            "id": "98F8DF40-D111-4E41-A946-33FB6663F59C"
+        },
+        "tag": {
+            "id": "814A348E-3A12-407F-93D0-BB87F6CEA31F"
+        }
+    },
+    {
+        "id": null,
+        "article": {
+            "id": "0CC0F31E-C79A-4ADC-8EB7-9C8191148339"
+        },
+        "tag": {
+            "id": "6AA76E29-ED8B-4B87-A182-87C7B3700E37"
+        }
+    },
+    {
+        "id": null,
+        "article": {
+            "id": "0CC0F31E-C79A-4ADC-8EB7-9C8191148339"
+        },
+        "tag": {
+            "id": "4282DDA7-D2F3-455D-86C7-A58B83BDEF35"
+        }
+    },
+    {
+        "id": null,
+        "article": {
+            "id": "0CC0F31E-C79A-4ADC-8EB7-9C8191148339"
+        },
+        "tag": {
+            "id": "51E652C6-8191-4321-B82C-9F618981C207"
+        }
+    },
+    {
+        "id": null,
+        "article": {
+            "id": "0CC0F31E-C79A-4ADC-8EB7-9C8191148339"
+        },
+        "tag": {
+            "id": "EF428495-D028-4E0E-87BB-1331470012F1"
+        }
+    },
+    {
+        "id": null,
+        "article": {
+            "id": "0CC0F31E-C79A-4ADC-8EB7-9C8191148339"
+        },
+        "tag": {
+            "id": "F39FF292-C38B-40D2-B221-A5E58716E68A"
+        }
+    },
+    {
+        "id": null,
+        "article": {
+            "id": "31B9718F-B385-4107-A262-C66FB5DD0F66"
+        },
+        "tag": {
+            "id": "6AA76E29-ED8B-4B87-A182-87C7B3700E37"
+        }
+    },
+    {
+        "id": null,
+        "article": {
+            "id": "31B9718F-B385-4107-A262-C66FB5DD0F66"
+        },
+        "tag": {
+            "id": "4282DDA7-D2F3-455D-86C7-A58B83BDEF35"
+        }
+    },
+    {
+        "id": null,
+        "article": {
+            "id": "31B9718F-B385-4107-A262-C66FB5DD0F66"
+        },
+        "tag": {
+            "id": "51E652C6-8191-4321-B82C-9F618981C207"
+        }
+    }
+]

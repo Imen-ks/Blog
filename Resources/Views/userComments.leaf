@@ -1,0 +1,44 @@
+#extend("base"):
+    #export("content"):
+        <div class="container mt-3">
+            <h1 class="display-5">#(title)</h1>
+            <div class="row mt-4">
+                #if(count(comments) > 0):
+                    #for(comment in comments):
+                        <div class="col-lg-6 col-md-12">
+                            <div class="d-flex p-2 mb-2 align-items-center shadow border rounded">
+                                <div class="flex-shrink-0">
+                                    #if(comment.article.picture):
+                                        <img
+                                        src="/images/articlePictures/#(comment.article.picture)"
+                                        class="img-thumbnail rounded"
+                                        style="width: 5rem"
+                                        alt="Article Picture">
+                                    #else:
+                                        <img 
+                                        src="/images/articlePictures/noPicture.jpg"
+                                        class="img-thumbnail rounded"
+                                        style="width: 5rem"
+                                        alt="Article Picture">
+                                    #endif
+                                </div>
+                                <div class="flex-grow-1 ms-3 text-muted my-auto">
+                                    <h4>#(comment.article.title)</h4>
+                                    <em>#date(comment.createdAt, "yyyy-MM-dd HH:mm") :</em>
+                                    <em>"#(comment.description)"</em>
+                                </div>
+                                <div class="flex-grow-3 ms-3">
+                                    <a href="/articles/#(comment.article.id)" class="btn btn-outline-info" style="width: 7rem" role="button">
+                                        See Article
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    #endfor
+                #else:
+                    <h1 class="lead text-muted">You haven't written any comments yet (or the article you've commented has been deleted).</h1>
+                #endif
+            </div>
+        </div>
+    #endexport
+#endextend
