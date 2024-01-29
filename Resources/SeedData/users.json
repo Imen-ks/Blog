@@ -1,0 +1,22 @@
+[
+    {
+        "id": "1C36BF09-2E46-47BB-A98C-E29B44FA124D",
+        "firstName": "Jane",
+        "lastName": "Doe",
+        "username": "janedoe",
+        "password": "$2b$12$UvikqZ3txxuTeq/bREZvzuQYkUubiy8b80Mr6oQ3g8MmxkwDEwHNW",
+        "email": "janedoe@test.com",
+        "profilePicture": "jane.jpg",
+        "createdAt": "2024-01-27T00:52:16Z"
+    },
+    {
+        "id": "1BC36B40-2199-4300-A38D-6BCDF1FF7E64",
+        "firstName": "John",
+        "lastName": "Doe",
+        "username": "johndoe",
+        "password": "$2b$12$w6fXvhT4O3vYeEsTnKkxIOcjV.yXT1pQZ06AtF5jBRvRZmH/o4iPa",
+        "email": "johndoe@test.com",
+        "profilePicture": "john.jpg",
+        "createdAt": "2024-01-27T00:52:16Z",
+    }
+]

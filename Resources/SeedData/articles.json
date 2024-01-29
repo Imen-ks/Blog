@@ -1,0 +1,46 @@
+[
+    {
+        "id":"31B9718F-B385-4107-A262-C66FB5DD0F66",
+        "title":"Build back-end applications for iOS apps, front-end websites and stand-alone server applications with Vapor",
+        "description":"Vapor is an open-source web framework for Swift. It’s built on top of Apple’s SwiftNIO library to provide a powerful, asynchronous framework, allowing you to write backends, web apps APIs and HTTP servers. Its source code can be found on [GitHub](https://github.com/vapor/vapor) and it also comes with a [documentation](https://docs.vapor.codes).\n\nVapor is written in Swift, which is a modern, powerful and safe language providing a number of benefits over the more traditional server languages.\n\nVapor consists of a number of packages including **Leaf** — a templating engine for front-end development — and **Fluent**, a Swift Object Relational Mapping (ORM) framework with native, asynchronous database drivers.\n\n> Vapor 4 requires Swift 5.6 or greater.\n\n##### Install Toolbox\n```\nbrew install vapor\n```\n\n##### Create New Project\n```\nvapor new hello -n\n```\n\n##### Build & Run\n```\ncd hello\nopen Package.swift\n```\n\nThis opens the project in Xcode as a SwiftPM workspace. It will automatically begin downloading Swift Package Manager dependencies. This can take some time the first time you open a project.\n\nOnce finished, you have a starter project from a bare bones template and you can add dependencies as needed. In the Xcode toolbar, select the *hello* scheme and choose *My Mac* as the device then build and run.\nThe template has a predefined route, so open your browser, visit http://localhost:8080/hello and see the response!",
+        "picture":"vapor.jpg",
+        "user":{
+            "id":"1C36BF09-2E46-47BB-A98C-E29B44FA124D"
+        },
+        "createdAt":"2024-01-27T00:52:16Z",
+        "updatedAt":"2024-01-27T00:52:16Z"
+    },
+    {
+        "id":"0CC0F31E-C79A-4ADC-8EB7-9C8191148339",
+        "title":"Persist models in Vapor with Fluent and configure your application to integrate with a database",
+        "description":"Fluent is Vapor’s ORM, or object relational mapping tool. It’s an abstraction layer between the Vapor app and the database that makes working with databases easier and includes several benefits.\n\nWith Fluent you don’t have to use the database directly! When you interact directly with a database, you write database queries as strings. These aren’t type-safe and can be painful to use from Swift.\n\nFluent lets you use any of several database engines, even in the same app. Even better, you don’t need to know how to write queries since you can interact with your models in a Swifty way.\n\nModels, the Swift representation of your data, are used throughout Fluent. They’re the objects you save and access in your database. Fluent returns and uses type-safe models when interacting with the database which gives you compile-time safety.\n\nTo use Fluent, you need to add it to your project as a dependency. Update **Package.swift** so that:\n* The App package depends on the Fluent package\n* The App target depends on the Fluent target to ensure it links properly\n\n```\n  dependencies: [\n    ...\n    .package(\n      url: \"https://github.com/vapor/fluent.git\",\n      from: \"4.8.0\")\n  ],\n  targets: [\n    .executableTarget(\n      name: \"App\",\n      dependencies: [\n        ...\n        .product(name: \"Fluent\", package: \"fluent\")\n      ]\n    )\n  ...\n  ]\n```\n\nDatabases provide a reliable, performant means of storing and retrieving data. If your application stores information in memory, it’s lost when you stop the application. It’s good practice to decouple storage from your application as this allows you to scale your application across multiple instances, all backed by the same database. Indeed, most hosting solutions don’t have persistent file storage.\n\nVapor has official, Swift-native drivers for:\n* SQLite\n* MySQL\n* PostgreSQL\n* MongoDB\n\nConfiguring your Vapor application to use a database follows the same steps for all supported databases:\n* Add the Fluent Provider as a dependency to the project\n* Configure the database\n\nBefore you can save the model in the database, you must create a table for it. Fluent does this with a migration.\n\nMigrations let you make reliable, testable, reproducible changes to your database. Developers commonly use migrations to create a database schema, or table description, for models. They’re also used to seed data into your database or make changes to your models after you’ve created them.",
+        "picture":"fluent.jpg",
+        "user":{
+            "id":"1C36BF09-2E46-47BB-A98C-E29B44FA124D"
+        },
+        "createdAt":"2024-01-27T00:52:16Z",
+        "updatedAt":"2024-01-27T00:52:16Z"
+    },
+    {
+        "id":"98F8DF40-D111-4E41-A946-33FB6663F59C",
+        "title":"Build a front-end website to consume your server-side Swift API with Leaf",
+        "description":"Leaf is Vapor’s templating language. A templating language allows you to pass information to a page so it can generate the final HTML without knowing everything up front.\n\nTemplating languages also allow you to reduce duplication in your webpages. Instead of multiple pages, you create a single template and set the properties specific to displaying a particular element. If you decide to change the way you display an element, you only need to make the change to your code once for all pages to show the new format.\n\nFinally, templating languages allow you to embed templates into other templates. For example, if you have navigation on your website, you can create a single template that generates the code for your navigation. You embed the navigation template in all templates that need navigation rather than duplicating code.\n\nTo use Leaf, you need to add it to your project as a dependency. Update **Package.swift** so that:\n* The App package depends on the Leaf package\n* The App target depends on the Leaf target to ensure it links properly\n\n```\n  dependencies: [\n    ...\n    .package(\n      url: \"https://github.com/vapor/leaf.git\",\n      from: \"4.0.0\")\n  ],\n  targets: [\n    .executableTarget(\n      name: \"App\",\n      dependencies: [\n        ...\n        .product(name: \"Leaf\", package: \"leaf\")\n      ]\n    )\n  ...\n  ]\n```",
+        "picture":"leaf.jpg",
+        "user":{
+            "id":"1C36BF09-2E46-47BB-A98C-E29B44FA124D"
+        },
+        "createdAt":"2024-01-27T00:52:16Z",
+        "updatedAt":"2024-01-27T00:52:16Z"
+    },
+    {
+        "id":"F50C1005-4825-495C-B1DE-78A717D87080",
+        "title":"Use Redis with Vapor to cache objects by saving them in JSON",
+        "description":"Redis is the most popular key-value data store for high-performance storage and caching.\n\nWhen speed is critical, a Redis cache can help your app be “Best in Show”. Other tricks Redis can do include:\n* Storing session states\n* Replacing parts of a database\n* Maintaining a sorted list\n* Storing and brokering messages\n\nTo use Redis, you need to add it to your project as a dependency. Update **Package.swift** so that:\n* The App package depends on the Redis package\n* The App target depends on the Redis target to ensure it links properly\n\n```\n  dependencies: [\n    ...\n    .package(\n      url: \"https://github.com/vapor/redis.git\",\n      from: \"4.0.0\")\n  ],\n  targets: [\n    .executableTarget(\n      name: \"App\",\n      dependencies: [\n        ...\n        .product(name: \"Redis\", package: \"redis\")\n      ]\n    )\n  ...\n  ]\n```\n\nVapor employs a pooling strategy for RedisConnection instances, and there are several options to configure individual connections as well as the pools themselves.\n\nThe bare minimum required for configuring Redis is to provide a URL to connect to:\n```\nlet config = try RedisConfiguration(hostname: \"localhost\")\napp.redis.configuration = config\n```",
+        "picture":"redis.jpg",
+        "user":{
+            "id":"1C36BF09-2E46-47BB-A98C-E29B44FA124D"
+        },
+        "createdAt":"2024-01-27T00:52:16Z",
+        "updatedAt":"2024-01-27T00:52:16Z"
+    }
+]
