@@ -11,24 +11,30 @@ import Vapor
 struct GetArticleMiddleware: Middleware {
     func respond(to request: Request, chainingTo next: Responder)
     -> EventLoopFuture<Response> {
-        let articleId = request.parameters.get(WebsitePath.articleId.rawValue) ?? ""
-        let uri = URI(string: "\(ApiEndpoint.articles.url)/\(articleId)")
-        return request.client.get(uri) { _ in }
-            .flatMapThrowing { response in
-                guard response.status == .ok else {
-                    throw Abort(.notFound)
-                }
-                let user = try request.content.decode(User.Public.self)
-                let article = try response.content.decode(Article.self)
-                let articleContext = ArticleContext(
-                    title: article.title,
-                    article: article,
-                    user: user,
-                    tags: [],
-                    comments: [])
-                return try request.content.encode(articleContext)
-            }.flatMap { _ in
-                return next.respond(to: request)
+        do {
+            guard let articleId = request.parameters.get(WebsitePath.articleId.rawValue) else {
+                throw Abort(.badRequest)
             }
+            let uri = URI(string: "\(ApiEndpoint.articles.url)/\(articleId)")
+            return request.client.get(uri) { _ in }
+                .flatMapThrowing { response in
+                    guard response.status == .ok else {
+                        throw Abort(.notFound)
+                    }
+                    let user = try request.content.decode(User.Public.self)
+                    let article = try response.content.decode(Article.self)
+                    let articleContext = ArticleContext(
+                        title: article.title,
+                        article: article,
+                        user: user,
+                        tags: [],
+                        comments: [])
+                    return try request.content.encode(articleContext)
+                }.flatMap { _ in
+                    return next.respond(to: request)
+                }
+        } catch {
+            return request.eventLoop.makeFailedFuture(error)
+        }
     }
 }

@@ -34,7 +34,9 @@ struct WebUsersController: RouteCollection {
     }
     
     func userHandler(_ req: Request) throws -> EventLoopFuture<View> {
-        let userId = req.parameters.get(WebsitePath.userId.rawValue) ?? ""
+        guard let userId = req.parameters.get(WebsitePath.userId.rawValue) else {
+            throw Abort(.badRequest)
+        }
         let userLoggedIn = req.auth.has(User.self)
         let user = req.auth.get(User.self)
         let userIsAuthor = user?.id?.uuidString == userId
@@ -85,8 +87,10 @@ struct WebUsersController: RouteCollection {
     
     func profileHandler(_ req: Request) throws -> EventLoopFuture<View> {
         let userLoggedIn = req.auth.has(User.self)
-        let user = req.auth.get(User.self)
-        let userId = try user?.requireID().uuidString ?? ""
+        guard let user = req.auth.get(User.self) else {
+            throw Abort(.unauthorized)
+        }
+        let userId = try user.requireID().uuidString
         let uri = URI(string: "\(ApiEndpoint.users.url)/\(userId)")
         return req.client.get(uri) { _ in }
             .flatMapThrowing { clientResponse -> User.Public in
@@ -111,9 +115,11 @@ struct WebUsersController: RouteCollection {
             }
     }
     
-    func addProfilePictureHandler(_ req: Request) -> EventLoopFuture<View> {
+    func addProfilePictureHandler(_ req: Request) throws -> EventLoopFuture<View> {
         let userLoggedIn = req.auth.has(User.self)
-        let userId = req.parameters.get(WebsitePath.userId.rawValue) ?? ""
+        guard let userId = req.parameters.get(WebsitePath.userId.rawValue) else {
+            throw Abort(.badRequest)
+        }
         let uri = URI(string: "\(ApiEndpoint.users.url)/\(userId)")
         return req.client.get(uri) { _ in }
             .flatMapThrowing { clientResponse -> User.Public in
@@ -136,7 +142,9 @@ struct WebUsersController: RouteCollection {
     
     func addProfilePicturePostHandler(_ req: Request) throws -> EventLoopFuture<Response> {
         let data = try req.content.decode(ImageUploadData.self)
-        let userId = req.parameters.get(WebsitePath.userId.rawValue) ?? ""
+        guard let userId = req.parameters.get(WebsitePath.userId.rawValue) else {
+            throw Abort(.badRequest)
+        }
         let uri = URI(string: "\(ApiEndpoint.users.url)/\(userId)")
         return req.client.get(uri) { _ in }
             .flatMapThrowing { clientResponse -> User.Public in
@@ -167,8 +175,10 @@ struct WebUsersController: RouteCollection {
     
     func editProfileHandler(_ req: Request) throws -> EventLoopFuture<View> {
         let userLoggedIn = req.auth.has(User.self)
-        let user = req.auth.get(User.self)
-        let userId = try user?.requireID().uuidString ?? ""
+        guard let user = req.auth.get(User.self) else {
+            throw Abort(.unauthorized)
+        }
+        let userId = try user.requireID().uuidString
         let uri = URI(string: "\(ApiEndpoint.users.url)/\(userId)")
         return req.client.get(uri) { _ in }
             .flatMapThrowing { clientResponse -> User.Public in
@@ -203,8 +213,10 @@ struct WebUsersController: RouteCollection {
             return req.eventLoop.future(redirect)
         }
         let updateData = try req.content.decode(EditProfileData.self)
-        let user = req.auth.get(User.self)
-        let userId = try user?.requireID().uuidString ?? ""
+        guard let user = req.auth.get(User.self) else {
+            throw Abort(.unauthorized)
+        }
+        let userId = try user.requireID().uuidString
         let uri = URI(string: "\(ApiEndpoint.users.url)/\(userId)")
         return req.client.put(uri, headers: req.headers) { clientRequest in
             try clientRequest.content.encode(updateData)
@@ -231,8 +243,10 @@ struct WebUsersController: RouteCollection {
             return req.eventLoop.future(redirect)
         }
         let updateData = try req.content.decode(ChangePasswordData.self)
-        let user = req.auth.get(User.self)
-        let userId = try user?.requireID().uuidString ?? ""
+        guard let user = req.auth.get(User.self) else {
+            throw Abort(.unauthorized)
+        }
+        let userId = try user.requireID().uuidString
         let uri = URI(string: "\(ApiEndpoint.users.url)/\(userId)")
         return req.client.put(uri, headers: req.headers) { clientRequest in
             try clientRequest.content.encode(updateData)
@@ -252,8 +266,10 @@ struct WebUsersController: RouteCollection {
     
     func userCommentsHandler(_ req: Request) throws -> EventLoopFuture<View> {
         let userLoggedIn = req.auth.has(User.self)
-        let user = req.auth.get(User.self)
-        let userId = try user?.requireID().uuidString ?? ""
+        guard let user = req.auth.get(User.self) else {
+            throw Abort(.unauthorized)
+        }
+        let userId = try user.requireID().uuidString
         let uri = URI(string: "\(ApiEndpoint.users.url)/\(userId)/\(ApiPath.comments.rawValue)")
         return req.client.get(uri, headers: req.headers) { clientRequest in }
             .flatMapThrowing { clientResponse -> [CommentWithArticle] in
@@ -264,7 +280,7 @@ struct WebUsersController: RouteCollection {
             }
             .flatMap { comments in
                 let context = UserCommentsContext(
-                    user: user?.convertToPublic(),
+                    user: user.convertToPublic(),
                     comments: comments,
                     userLoggedIn: userLoggedIn)
                 return req.view.render(WebsiteView.userComments.leafRenderer, context)

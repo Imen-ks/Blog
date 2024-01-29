@@ -89,8 +89,10 @@ struct WebArticlesController: RouteCollection {
             return req.eventLoop.future(redirect)
         }
         let data = try req.content.decode(CreateArticleFormData.self)
-        let user = req.auth.get(User.self)
-        let userId = try user?.requireID().uuidString ?? ""
+        guard let user = req.auth.get(User.self) else {
+            throw Abort(.unauthorized)
+        }
+        let userId = try user.requireID().uuidString
         let uri = URI(string: "\(ApiEndpoint.users.url)/\(userId)/\(ApiPath.articles.rawValue)")
         return req.client.post(uri, headers: req.headers) { clientRequest in
                 let articlePostData = CreateArticleData(
@@ -123,10 +125,12 @@ struct WebArticlesController: RouteCollection {
             }
     }
 
-    func addArticlePictureHandler(_ req: Request) 
+    func addArticlePictureHandler(_ req: Request) throws
     -> EventLoopFuture<View> {
         let userLoggedIn = req.auth.has(User.self)
-        let articleId = req.parameters.get(WebsitePath.articleId.rawValue) ?? ""
+        guard let articleId = req.parameters.get(WebsitePath.articleId.rawValue) else {
+            throw Abort(.badRequest)
+        }
         let uri = URI(string: "\(ApiEndpoint.articles.url)/\(articleId)")
         return req.client.get(uri) { _ in }
             .flatMapThrowing { clientResponse -> Article in
@@ -150,7 +154,9 @@ struct WebArticlesController: RouteCollection {
     func addArticlePicturePostHandler(_ req: Request) throws 
     -> EventLoopFuture<Response> {
         let data = try req.content.decode(ImageUploadData.self)
-        let articleId = req.parameters.get(WebsitePath.articleId.rawValue) ?? ""
+        guard let articleId = req.parameters.get(WebsitePath.articleId.rawValue) else {
+            throw Abort(.badRequest)
+        }
         let uri = URI(string: "\(ApiEndpoint.articles.url)/\(articleId)")
         return req.client.get(uri) { _ in }
             .flatMapThrowing { clientResponse -> Article in
@@ -201,7 +207,9 @@ struct WebArticlesController: RouteCollection {
 
     func editArticlePostHandler(_ req: Request) throws 
     -> EventLoopFuture<Response> {
-        let articleId = req.parameters.get(WebsitePath.articleId.rawValue) ?? ""
+        guard let articleId = req.parameters.get(WebsitePath.articleId.rawValue) else {
+            throw Abort(.badRequest)
+        }
         do {
             try CreateArticleFormData.validate(content: req)
         } catch let error as ValidationsError {
@@ -213,7 +221,7 @@ struct WebArticlesController: RouteCollection {
         }
         let updateData = try req.content.decode(CreateArticleFormData.self)
         let uri = URI(string: "\(ApiEndpoint.articles.url)/\(articleId)")
-        return req.client.post(uri, headers: req.headers) { clientRequest in
+        return req.client.put(uri, headers: req.headers) { clientRequest in
             try clientRequest.content.encode(updateData)
         }
         .flatMapThrowing { clientResponse in
@@ -230,7 +238,7 @@ struct WebArticlesController: RouteCollection {
             }
             var tagFuture: [EventLoopFuture<Void>] = []
             let editArticleTagsUri = URI(string: "\(ApiEndpoint.articles.url)/\(id)/\(ApiPath.tags.rawValue)")
-            tagFuture.append(req.client.put(editArticleTagsUri, headers: req.headers) { clientRequest in
+            tagFuture.append(req.client.post(editArticleTagsUri, headers: req.headers) { clientRequest in
                 try clientRequest.content.encode(updateData.tags)
             }.flatMapThrowing { clientResponse in })
             tagFuture.flatten(on: req.eventLoop).whenSuccess { _ in }
@@ -238,9 +246,11 @@ struct WebArticlesController: RouteCollection {
         }
     }
 
-    func deleteArticleHandler(_ req: Request) 
+    func deleteArticleHandler(_ req: Request) throws
     -> EventLoopFuture<Response> {
-        let articleId = req.parameters.get(WebsitePath.articleId.rawValue) ?? ""
+        guard let articleId = req.parameters.get(WebsitePath.articleId.rawValue) else {
+            throw Abort(.badRequest)
+        }
         let uri = URI(string: "\(ApiEndpoint.articles.url)/\(articleId)")
         return req.client.delete(uri, headers: req.headers) { clientRequest in }
             .flatMapThrowing { clientResponse in
@@ -282,7 +292,9 @@ struct WebArticlesController: RouteCollection {
 
     func addCommentPostHandler(_ req: Request) throws 
     -> EventLoopFuture<Response> {
-        let articleId = req.parameters.get(WebsitePath.articleId.rawValue) ?? ""
+        guard let articleId = req.parameters.get(WebsitePath.articleId.rawValue) else {
+            throw Abort(.badRequest)
+        }
         do {
             try CreateCommentFormData.validate(content: req)
         } catch let error as ValidationsError {
@@ -293,8 +305,10 @@ struct WebArticlesController: RouteCollection {
             return req.eventLoop.future(redirect)
         }
         let data = try req.content.decode(CreateCommentFormData.self)
-        let user = req.auth.get(User.self)
-        let userId = try user?.requireID().uuidString ?? ""
+        guard let user = req.auth.get(User.self) else {
+            throw Abort(.unauthorized)
+        }
+        let userId = try user.requireID().uuidString
         let uri = URI(string: "\(ApiEndpoint.users.url)/\(userId)/\(ApiPath.articles.rawValue)/\(articleId)/\(ApiPath.comments.rawValue)")
         return req.client.post(uri, headers: req.headers) { clientRequest in
             let commentPostData = CreateCommentData(comment: data.comment)

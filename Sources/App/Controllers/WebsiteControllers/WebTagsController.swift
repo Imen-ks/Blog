@@ -33,9 +33,11 @@ struct WebTagsController: RouteCollection {
             }
     }
 
-    func tagHandler(_ req: Request) -> EventLoopFuture<View> {
+    func tagHandler(_ req: Request) throws -> EventLoopFuture<View> {
         let userLoggedIn = req.auth.has(User.self)
-        let tagId = req.parameters.get(WebsitePath.tagId.rawValue) ?? ""
+        guard let tagId = req.parameters.get(WebsitePath.tagId.rawValue) else {
+            throw Abort(.badRequest)
+        }
         let uri = URI(string: "\(ApiEndpoint.tags.url)/\(tagId)")
         return req.client.get(uri) { _ in }
             .flatMapThrowing { clientResponse -> Tag in

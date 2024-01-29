@@ -46,13 +46,13 @@ struct ArticlesController: RouteCollection {
             on: req.db)
         .unwrap(or: Abort(.notFound)).flatMapThrowing { article -> Article in
             let userAuth = try req.auth.require(User.self)
-            if article.$user.id == userAuth.id {
-                article.title = updateData.title != nil ? updateData.title! : article.title
-                article.description = updateData.description != nil ? updateData.description! : article.description
-                article.picture = updateData.picture != nil ? updateData.picture! : article.picture
-                return article
+            guard article.$user.id == userAuth.id else {
+                throw Abort(.unauthorized)
             }
-            else { return article }
+            article.title = updateData.title != nil ? updateData.title! : article.title
+            article.description = updateData.description != nil ? updateData.description! : article.description
+            article.picture = updateData.picture != nil ? updateData.picture! : article.picture
+            return article
         }
         .flatMap { article in
             article.save(on: req.db).map { article }
@@ -65,10 +65,11 @@ struct ArticlesController: RouteCollection {
             .unwrap(or: Abort(.notFound))
             .flatMapThrowing { article -> EventLoopFuture<HTTPStatus> in
                 let userAuth = try req.auth.require(User.self)
-                if article.$user.id == userAuth.id {
-                    return article.delete(on: req.db)
-                        .transform(to: HTTPStatus.noContent)
-                } else { return req.eventLoop.future(HTTPStatus.unauthorized) }
+                guard article.$user.id == userAuth.id else {
+                    throw Abort(.unauthorized)
+                }
+                return article.delete(on: req.db)
+                    .transform(to: HTTPStatus.noContent)
             }
             .flatMap { $0 }
     }
@@ -110,15 +111,16 @@ struct ArticlesController: RouteCollection {
             .unwrap(or: Abort(.notFound))
             .flatMapThrowing { article -> EventLoopFuture<[Tag]> in
                 let userAuth = try req.auth.require(User.self)
-                if article.$user.id == userAuth.id {
-                    return Tag.updateTags(tagNames, for: article, on: req).flatMap { _ in
-                        return Article.find(req.parameters.get(ApiPath.articleId.rawValue), on: req.db)
-                            .unwrap(or: Abort(.notFound))
-                            .flatMap { article in
-                                return article.$tags.get(on: req.db)
-                            }
-                    }.map { $0 }
-                } else { return article.$tags.get(on: req.db) }
+                guard article.$user.id == userAuth.id else {
+                    throw Abort(.unauthorized)
+                }
+                return Tag.updateTags(tagNames, for: article, on: req).flatMap { _ in
+                    return Article.find(req.parameters.get(ApiPath.articleId.rawValue), on: req.db)
+                        .unwrap(or: Abort(.notFound))
+                        .flatMap { article in
+                            return article.$tags.get(on: req.db)
+                        }
+                }.map { $0 }
             }
             .flatMap { $0 }
     }

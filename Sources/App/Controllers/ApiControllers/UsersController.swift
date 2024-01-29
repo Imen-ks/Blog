@@ -64,17 +64,17 @@ struct UsersController: RouteCollection {
         .unwrap(or: Abort(.notFound))
         .flatMapThrowing { user -> User in
             let userAuth = try req.auth.require(User.self)
-            if user.id == userAuth.id {
-                let formattedPassword = updateData.password != nil ? try Bcrypt.hash(updateData.password!) : user.password
-                user.firstName = updateData.firstName != nil ? updateData.firstName! : user.firstName
-                user.lastName = updateData.lastName != nil ? updateData.lastName! : user.lastName
-                user.username = updateData.username != nil ? updateData.username! : user.username
-                user.password = formattedPassword
-                user.email = updateData.email != nil ? updateData.email! : user.email
-                user.profilePicture = updateData.profilePicture != nil ? updateData.profilePicture! : user.profilePicture
-                return user
+            guard user.id == userAuth.id else {
+                throw Abort(.unauthorized)
             }
-            else { return user }
+            let formattedPassword = updateData.password != nil ? try Bcrypt.hash(updateData.password!) : user.password
+            user.firstName = updateData.firstName != nil ? updateData.firstName! : user.firstName
+            user.lastName = updateData.lastName != nil ? updateData.lastName! : user.lastName
+            user.username = updateData.username != nil ? updateData.username! : user.username
+            user.password = formattedPassword
+            user.email = updateData.email != nil ? updateData.email! : user.email
+            user.profilePicture = updateData.profilePicture != nil ? updateData.profilePicture! : user.profilePicture
+            return user
         }
         .flatMap { user in
             user.save(on: req.db).map { user }
