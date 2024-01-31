@@ -9,12 +9,15 @@ import Foundation
 import Vapor
 
 struct WebTagsController: RouteCollection {
-
     func boot(routes: RoutesBuilder) throws {
+        // PATH COMPONENTS
+        let tags = WebsitePath.tags.component
+        let tagId = WebsitePath.tagId.component
+
         let authSessionsRoutes = routes.grouped(User.sessionAuthenticator())
         
-        authSessionsRoutes.get(WebsitePath.tags.component, use: allTagsHandler)
-        authSessionsRoutes.get(WebsitePath.tags.component, WebsitePath.tagId.component, use: tagHandler)
+        authSessionsRoutes.get(tags, use: allTagsHandler)
+        authSessionsRoutes.get(tags, tagId, use: tagHandler)
     }
 
     func allTagsHandler(_ req: Request) -> EventLoopFuture<View> {

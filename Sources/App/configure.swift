@@ -37,7 +37,8 @@ public func configure(_ app: Application) async throws {
         SeedArticles(),
         SeedTags(),
         SeedArticleTagPivots(),
-        SeedComments()
+        SeedComments(),
+        SeedTokens()
     ])
 
     app.logger.logLevel = .debug

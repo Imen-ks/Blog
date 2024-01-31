@@ -9,12 +9,14 @@ import Foundation
 import Vapor
 
 struct WebRegisterController: RouteCollection {
-
     func boot(routes: RoutesBuilder) throws {
+        // PATH COMPONENTS
+        let register = WebsitePath.register.component
+
         let authSessionsRoutes = routes.grouped(User.sessionAuthenticator())
 
-        authSessionsRoutes.get(WebsitePath.register.component, use: registerHandler)
-        authSessionsRoutes.post(WebsitePath.register.component, use: registerPostHandler)
+        authSessionsRoutes.get(register, use: registerHandler)
+        authSessionsRoutes.post(register, use: registerPostHandler)
     }
 
     func registerHandler(_ req: Request) -> EventLoopFuture<View> {
@@ -79,5 +81,3 @@ struct WebRegisterController: RouteCollection {
         }
     }
 }
-
-

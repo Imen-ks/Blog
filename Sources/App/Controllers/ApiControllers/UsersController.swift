@@ -10,7 +10,16 @@ import Vapor
 
 struct UsersController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
-        let usersRoute = routes.grouped(ApiPath.api.component, ApiPath.users.component)
+        // PATH COMPONENTS
+        let api = ApiPath.api.component
+        let users = ApiPath.users.component
+        let userId = ApiPath.userId.component
+        let login = ApiPath.login.component
+        let articles = ApiPath.articles.component
+        let articleId = ApiPath.articleId.component
+        let comments = ApiPath.comments.component
+
+        let usersRoute = routes.grouped(api, users)
 
         let basicAuthMiddleware = User.authenticator()
         let basicAuthGroup = usersRoute.grouped(basicAuthMiddleware)
@@ -20,21 +29,21 @@ struct UsersController: RouteCollection {
         let tokenAuthGroup = usersRoute.grouped(tokenAuthMiddleware, guardAuthMiddleware)
 
         usersRoute.post(use: createHandler)
-        basicAuthGroup.post(ApiPath.login.component, use: loginHandler)
+        basicAuthGroup.post(login, use: loginHandler)
         usersRoute.get(use: getAllHandler)
-        usersRoute.get(ApiPath.userId.component, use: getHandler)
-        tokenAuthGroup.put(ApiPath.userId.component, use: updateHandler)
-        tokenAuthGroup.post(ApiPath.userId.component, ApiPath.articles.component, use: createArticleHandler)
-        usersRoute.get(ApiPath.userId.component, ApiPath.articles.component, use: getArticlesHandler)
-        tokenAuthGroup.post(ApiPath.userId.component, ApiPath.articles.component, ApiPath.articleId.component, ApiPath.comments.component, use: createCommentHandler)
-        usersRoute.get(ApiPath.userId.component, ApiPath.comments.component, use: getCommentsHandler)
+        usersRoute.get(userId, use: getHandler)
+        tokenAuthGroup.put(userId, use: updateHandler)
+        tokenAuthGroup.post(userId, articles, use: createArticleHandler)
+        usersRoute.get(userId, articles, use: getArticlesHandler)
+        tokenAuthGroup.post(userId, articles, articleId, comments, use: createCommentHandler)
+        usersRoute.get(userId, comments, use: getCommentsHandler)
     }
 
     func createHandler(_ req: Request) throws
-    -> EventLoopFuture<User> {
+    -> EventLoopFuture<User.Public> {
         let user = try req.content.decode(User.self)
         user.password = try Bcrypt.hash(user.password)
-        return user.save(on: req.db).map { user }
+        return user.save(on: req.db).map { user.convertToPublic() }
     }
 
     func loginHandler(_ req: Request) throws
@@ -57,7 +66,7 @@ struct UsersController: RouteCollection {
     }
 
     func updateHandler(_ req: Request) throws
-    -> EventLoopFuture<User> {
+    -> EventLoopFuture<User.Public> {
         let updateData = try req.content.decode(UpdateUserData.self)
         return User.find(req.parameters.get(ApiPath.userId.rawValue),
                          on: req.db)
@@ -77,7 +86,7 @@ struct UsersController: RouteCollection {
             return user
         }
         .flatMap { user in
-            user.save(on: req.db).map { user }
+            user.save(on: req.db).map { user.convertToPublic() }
         }
     }
 

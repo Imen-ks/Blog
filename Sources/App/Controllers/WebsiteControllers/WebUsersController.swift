@@ -12,25 +12,30 @@ struct WebUsersController: RouteCollection {
     let imageFolder = WorkingDirectory.profilePicturesFolder
     
     func boot(routes: RoutesBuilder) throws {
+        // PATH COMPONENTS
+        let users = WebsitePath.users.component
+        let userId = WebsitePath.userId.component
+        let profile = WebsitePath.profile.component
+        let addProfilePicture = WebsitePath.addProfilePicture.component
+        let edit = WebsitePath.edit.component
+        let changePassword = WebsitePath.changePassword.component
+        let comments = WebsitePath.comments.component
+
         let authSessionsRoutes = routes.grouped(User.sessionAuthenticator())
         let protectedRoutes = authSessionsRoutes
             .grouped(Token.generateToken(), User.redirectMiddleware(path: WebsiteEndpoint.login.url))
         
-        authSessionsRoutes.get(WebsitePath.users.component, WebsitePath.userId.component, use: userHandler)
-        authSessionsRoutes.get(WebsitePath.users.component, use: allUsersHandler)
-        authSessionsRoutes.get(WebsitePath.profile.component, use: profileHandler)
-        protectedRoutes.get(WebsitePath.users.component, WebsitePath.userId.component, WebsitePath.addProfilePicture.component, use: addProfilePictureHandler)
-        protectedRoutes.on(
-            .POST,
-            WebsitePath.users.component,
-            WebsitePath.userId.component,
-            WebsitePath.addProfilePicture.component,
+        authSessionsRoutes.get(users, userId, use: userHandler)
+        authSessionsRoutes.get(users, use: allUsersHandler)
+        authSessionsRoutes.get(profile, use: profileHandler)
+        protectedRoutes.get(users, userId, addProfilePicture, use: addProfilePictureHandler)
+        protectedRoutes.on(.POST, users, userId, addProfilePicture,
             body: .collect(maxSize: "10mb"),
             use: addProfilePicturePostHandler)
-        protectedRoutes.get(WebsitePath.profile.component, WebsitePath.edit.component, use: editProfileHandler)
-        protectedRoutes.post(WebsitePath.profile.component, WebsitePath.edit.component, use: editProfilePostHandler)
-        protectedRoutes.post(WebsitePath.profile.component, WebsitePath.changePassword.component, use: changePasswordHandler)
-        protectedRoutes.get(WebsitePath.users.component, WebsitePath.userId.component, WebsitePath.comments.component, use: userCommentsHandler)
+        protectedRoutes.get(profile, edit, use: editProfileHandler)
+        protectedRoutes.post(profile, edit, use: editProfilePostHandler)
+        protectedRoutes.post(profile, changePassword, use: changePasswordHandler)
+        protectedRoutes.get(users, userId, comments, use: userCommentsHandler)
     }
     
     func userHandler(_ req: Request) throws -> EventLoopFuture<View> {
@@ -287,4 +292,3 @@ struct WebUsersController: RouteCollection {
             }
     }
 }
-

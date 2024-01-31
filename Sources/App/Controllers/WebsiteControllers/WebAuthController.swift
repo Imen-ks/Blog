@@ -9,14 +9,17 @@ import Foundation
 import Vapor
 
 struct WebAuthController: RouteCollection {
-    
     func boot(routes: RoutesBuilder) throws {
+        // PATH COMPONENTS
+        let login = WebsitePath.login.component
+        let logout = WebsitePath.logout.component
+
         let authSessionsRoutes = routes.grouped(User.sessionAuthenticator())
         let credentialsAuthRoutes = authSessionsRoutes.grouped(User.credentialsAuthenticator())
         
-        authSessionsRoutes.get(WebsitePath.login.component, use: loginHandler)
-        credentialsAuthRoutes.post(WebsitePath.login.component, use: loginPostHandler)
-        authSessionsRoutes.post(WebsitePath.logout.component, use: logoutHandler)
+        authSessionsRoutes.get(login, use: loginHandler)
+        credentialsAuthRoutes.post(login, use: loginPostHandler)
+        authSessionsRoutes.post(logout, use: logoutHandler)
     }
 
     func loginHandler(_ req: Request) -> EventLoopFuture<View> {

@@ -10,21 +10,30 @@ import Vapor
 
 struct ArticlesController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
-        let articlesRoutes = routes.grouped(ApiPath.api.component, ApiPath.articles.component)
+        // PATH COMPONENTS
+        let api = ApiPath.api.component
+        let articles = ApiPath.articles.component
+        let articleId = ApiPath.articleId.component
+        let tags = ApiPath.tags.component
+        let comments = ApiPath.comments.component
+        let search = ApiPath.search.component
+        let user = ApiPath.user.component
+
+        let articlesRoutes = routes.grouped(api, articles)
 
         let tokenAuthMiddleware = Token.authenticator()
         let guardAuthMiddleware = User.guardMiddleware()
         let tokenAuthGroup = articlesRoutes.grouped(tokenAuthMiddleware, guardAuthMiddleware)
 
         articlesRoutes.get(use: getAllHandler)
-        articlesRoutes.get(ApiPath.articleId.component, use: getHandler)
-        tokenAuthGroup.put(ApiPath.articleId.component, use: updateHandler)
-        tokenAuthGroup.delete(ApiPath.articleId.component, use: deleteHandler)
-        articlesRoutes.get(ApiPath.search.component, use: searchHandler)
-        articlesRoutes.get(ApiPath.articleId.component, ApiPath.user.component, use: getUserHandler)
-        articlesRoutes.get(ApiPath.articleId.component, ApiPath.tags.component, use: getTagsHandler)
-        tokenAuthGroup.post(ApiPath.articleId.component, ApiPath.tags.component, use: updateTagsHandler)
-        articlesRoutes.get(ApiPath.articleId.component, ApiPath.comments.component, use: getCommentsHandler)
+        articlesRoutes.get(articleId, use: getHandler)
+        tokenAuthGroup.put(articleId, use: updateHandler)
+        tokenAuthGroup.delete(articleId, use: deleteHandler)
+        articlesRoutes.get(search, use: searchHandler)
+        articlesRoutes.get(articleId, user, use: getUserHandler)
+        articlesRoutes.get(articleId, tags, use: getTagsHandler)
+        tokenAuthGroup.post(articleId, tags, use: updateTagsHandler)
+        articlesRoutes.get(articleId, comments, use: getCommentsHandler)
     }
 
     func getAllHandler(_ req: Request)

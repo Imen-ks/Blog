@@ -12,6 +12,16 @@ struct WebArticlesController: RouteCollection {
     let imageFolder = WorkingDirectory.articlePicturesFolder
 
     func boot(routes: RoutesBuilder) throws {
+        // PATH COMPONENTS
+        let articles = WebsitePath.articles.component
+        let articleId = WebsitePath.articleId.component
+        let create = WebsitePath.create.component
+        let addArticlePicture = WebsitePath.addArticlePicture.component
+        let edit = WebsitePath.edit.component
+        let delete = WebsitePath.delete.component
+        let search = WebsitePath.search.component
+        let comments = WebsitePath.comments.component
+
         let authSessionsRoutes = routes.grouped(User.sessionAuthenticator())
         let protectedRoutes = authSessionsRoutes
             .grouped(Token.generateToken(), User.redirectMiddleware(path: WebsiteEndpoint.login.url))
@@ -19,24 +29,20 @@ struct WebArticlesController: RouteCollection {
         authSessionsRoutes.get(use: indexHandler)
         authSessionsRoutes
             .grouped(GetArticleUserMiddleware(), GetArticleMiddleware(), GetArticleTagsMiddleware(), GetArticleCommentsMiddleware())
-            .get(WebsitePath.articles.component, WebsitePath.articleId.component, use: articleHandler)
-        protectedRoutes.get(WebsitePath.articles.component, WebsitePath.create.component, use: createArticleHandler)
-        protectedRoutes.post(WebsitePath.articles.component, WebsitePath.create.component, use: createArticlePostHandler)
-        protectedRoutes.get(WebsitePath.articles.component, WebsitePath.articleId.component, WebsitePath.addArticlePicture.component, use: addArticlePictureHandler)
-        protectedRoutes.on(
-            .POST,
-            WebsitePath.articles.component,
-            WebsitePath.articleId.component,
-            WebsitePath.addArticlePicture.component,
+            .get(articles, articleId, use: articleHandler)
+        protectedRoutes.get(articles, create, use: createArticleHandler)
+        protectedRoutes.post(articles, create, use: createArticlePostHandler)
+        protectedRoutes.get(articles, articleId, addArticlePicture, use: addArticlePictureHandler)
+        protectedRoutes.on(.POST, articles, articleId, addArticlePicture,
             body: .collect(maxSize: "10mb"),
             use: addArticlePicturePostHandler)
         protectedRoutes
             .grouped(GetArticleUserMiddleware(), GetArticleMiddleware(), GetArticleTagsMiddleware(), GetArticleCommentsMiddleware())
-            .get(WebsitePath.articles.component, WebsitePath.articleId.component, WebsitePath.edit.component, use: editArticleHandler)
-        protectedRoutes.post(WebsitePath.articles.component, WebsitePath.articleId.component, WebsitePath.edit.component, use: editArticlePostHandler)
-        protectedRoutes.post(WebsitePath.articles.component, WebsitePath.articleId.component, WebsitePath.delete.component, use: deleteArticleHandler)
-        authSessionsRoutes.get(WebsitePath.search.component, use: searchArticleHandler)
-        protectedRoutes.post(WebsitePath.articles.component, WebsitePath.articleId.component, WebsitePath.comments.component, use: addCommentPostHandler)
+            .get(articles, articleId, edit, use: editArticleHandler)
+        protectedRoutes.post(articles, articleId, edit, use: editArticlePostHandler)
+        protectedRoutes.post(articles, articleId, delete, use: deleteArticleHandler)
+        authSessionsRoutes.get(search, use: searchArticleHandler)
+        protectedRoutes.post(articles, articleId, comments, use: addCommentPostHandler)
     }
 
     func indexHandler(_ req: Request) throws 

@@ -38,9 +38,6 @@ enum WebsiteEndpoint: String {
 }
 
 enum WebsitePath: String {
-    // Root
-    case api
-
     // WebRegisterController
     case register
 
@@ -73,8 +70,6 @@ enum WebsitePath: String {
     
     var component: PathComponent {
         switch self {
-        case .api:
-            return PathComponent(stringLiteral: Self.api.rawValue)
         case .register:
             return PathComponent(stringLiteral: Self.register.rawValue)
         case .login:

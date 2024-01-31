@@ -10,11 +10,17 @@ import Vapor
 
 struct TagsController: RouteCollection {
     func boot(routes: RoutesBuilder) throws {
-        let tagsRoute = routes.grouped(ApiPath.api.component, ApiPath.tags.component)
+        // PATH COMPONENTS
+        let api = ApiPath.api.component
+        let tags = ApiPath.tags.component
+        let tagId = ApiPath.tagId.component
+        let articles = ApiPath.articles.component
+
+        let tagsRoute = routes.grouped(api, tags)
 
         tagsRoute.get(use: getAllHandler)
-        tagsRoute.get(ApiPath.tagId.component, use: getHandler)
-        tagsRoute.get(ApiPath.tagId.component, ApiPath.articles.component, use: getArticlesHandler)
+        tagsRoute.get(tagId, use: getHandler)
+        tagsRoute.get(tagId, articles, use: getArticlesHandler)
     }
 
     func getAllHandler(_ req: Request)

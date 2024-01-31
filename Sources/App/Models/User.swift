@@ -76,7 +76,7 @@ final class User: Model, Content {
              lastName: String,
              username: String,
              email: String,
-             profilePicture: String?,
+             profilePicture: String? = nil,
              createdAt: Date?) {
             self.id = id
             self.firstName = firstName
