@@ -9,9 +9,9 @@ To be able to run this project, you need to have [Docker](https://www.docker.com
 - [Usage and Configuration](#usage-and-configuration)
 - [Seed Data](#seed-data)
 - [Models](#models)
-- [Seed Data](#seed-data)
 - [Routes and Headers](#routes-and-headers)
 - [API Documentation](#api-documentation)
+- [Remove the Docker containers](#remove-the-docker-containers)
 
 ## Usage and Configuration
 
