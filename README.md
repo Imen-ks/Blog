@@ -11,7 +11,7 @@ To be able to run this project, you need to have [Docker](https://www.docker.com
 - [Models](#models)
 - [Routes and Headers](#routes-and-headers)
 - [API Documentation](#api-documentation)
-- [Remove the Docker containers](#remove-the-docker-containers)
+- [Docker Commands](#docker-commands)
 
 ## Usage and Configuration
 
@@ -42,7 +42,8 @@ docker run --name postgres \
 docker run --name redis -p 6379:6379 -d redis
 ```
 > [!NOTE]
-> If you didn’t set up the environment variables, the default values will be used to run the containers.
+> Replace the environment variables with the ones you set up.
+> If you didn’t set up the environment variables, leave the default values and these will be used to run the containers.
 
 ### Custom Working Directory
 
@@ -497,10 +498,30 @@ curl -H "Content-Type: application/json" \
 http://localhost:8080/api/users/1C36BF09-2E46-47BB-A98C-E29B44FA124D/articles/0CC0F31E-C79A-4ADC-8EB7-9C8191148339/comments | jq
 ```
 
-## Remove the Docker containers
+## Docker Commands
+
+### Remove the containers
 ```
 docker rm -f postgres
 docker rm -f redis
 ```
+
+### Run the containers
+```
+docker run --name postgres \
+  -e POSTGRES_DB=vapor_database \
+  -e POSTGRES_USER=vapor_username \
+  -e POSTGRES_PASSWORD=vapor_password \
+  -p 5432:5432 -d postgres
+docker run --name redis -p 6379:6379 -d redis
+```
+Replace the environment variables if you have set them up or leave the default values.
+
+### Connect to the database
+```
+docker exec -it postgres psql -U vapor_username vapor_database
+```
+This will connect you to the running PostgreSQL database inside the container. From there, you can perform queries.
+
 > [!NOTE]
-> You can remove the containers and rerun them to restart with the initial database contained in the project.
+> You can remove the containers and rerun them to reset the database and restart with the initial database contained in the project.
