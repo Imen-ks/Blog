@@ -75,7 +75,7 @@ Based on these models, the API provides the below response Models to the Client.
 
 ### User.Public
 A public version of the API User model which does not include the password is returned to the Client when requested.  
-The `profilePicture` property of the model is optional and stores the **file name** of the user profile picture.  
+The `profilePicture` property of the model is optional and stores the file name of the user profile picture.  
 `{`  
 &nbsp;&nbsp;&nbsp;&nbsp;`"id"` : `UUID`  
 &nbsp;&nbsp;&nbsp;&nbsp;`"firstName"` : `String`  
@@ -105,8 +105,8 @@ A tag can be associated with one or many articles. An article can have one or ma
 `}`
 
 ### Article
-The `picture` property of the model is optional and stores the **file name** of the article picture. 
-The Article model also stores a `user` property providing the unique identifier of the the article’s author.  
+The `picture` property of the model is optional and stores the file name of the article picture. 
+The Article model also stores a `user` property providing the unique identifier of the article’s author.  
 `{`  
 &nbsp;&nbsp;&nbsp;&nbsp;`"id"` : `UUID`  
 &nbsp;&nbsp;&nbsp;&nbsp;`"title"`: `String`  

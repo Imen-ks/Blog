@@ -5,7 +5,11 @@ func routes(_ app: Application) throws {
     app.get("hello") { req async -> String in
         "Hello, world!"
     }
-    
+
+    app.get(ApiPath.api.component) { req async -> String in
+        "Hello, world!"
+    }
+
     // API
     let articlesController = ArticlesController()
     try app.register(collection: articlesController)
