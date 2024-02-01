@@ -80,9 +80,23 @@ In addition, an `updatedAt` property is defined for the Article model to trace t
 `createdAt` and `updatedAt` are equivalent if no update is made to the model.  
 Based on these models, the API provides the below response Models to the Client.
 
+### User
+The User model is returned during the registration process of a new user to enable the authentication process.  
+The `password` is securely saved in the database using the `Bcrypt` hashing algorithm. Bcrypt also provides a mechanism to verify a password using the password and a hash. This is done during the login process : the password provided in the Authorization header of the request is then verified.  
+The `profilePicture` property of the model is optional and stores the file name of the user profile picture.  
+`{`  
+&nbsp;&nbsp;&nbsp;&nbsp;`"id"` : `UUID`  
+&nbsp;&nbsp;&nbsp;&nbsp;`"firstName"` : `String`  
+&nbsp;&nbsp;&nbsp;&nbsp;`"lastName"` : `String`  
+&nbsp;&nbsp;&nbsp;&nbsp;`"username"` : `String` 
+&nbsp;&nbsp;&nbsp;&nbsp;`"password"` : `String`  
+&nbsp;&nbsp;&nbsp;&nbsp;`"email"` : `String`  
+&nbsp;&nbsp;&nbsp;&nbsp;`"profilePicture"` : `String`   
+&nbsp;&nbsp;&nbsp;&nbsp;`"createdAt"` : `Date`  
+`}`
+
 ### User.Public
 A public version of the API User model which does not include the password is returned to the Client when requested.  
-The `profilePicture` property of the model is optional and stores the file name of the user profile picture.  
 `{`  
 &nbsp;&nbsp;&nbsp;&nbsp;`"id"` : `UUID`  
 &nbsp;&nbsp;&nbsp;&nbsp;`"firstName"` : `String`  
