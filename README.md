@@ -6,6 +6,13 @@ This project uses [Vapor 4 framework for macOS](https://docs.vapor.codes/install
 The models are persisted into a PostgreSQL database hosted in a Docker container.  
 To be able to run this project, you need to have [Docker](https://www.docker.com/products/docker-desktop) installed in your system.
 
+- [Usage and Configuration](#usage-and-configuration)
+- [Seed Data](#seed-data)
+- [Models](#models)
+- [Seed Data](#seed-data)
+- [Routes and Headers](#routes-and-headers)
+- [API Documentation](#api-documentation)
+
 ## Usage and Configuration
 
 ### Open the project
