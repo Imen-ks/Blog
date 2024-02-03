@@ -95,11 +95,7 @@ struct WebArticlesController: RouteCollection {
             return req.eventLoop.future(redirect)
         }
         let data = try req.content.decode(CreateArticleFormData.self)
-        guard let user = req.auth.get(User.self) else {
-            throw Abort(.unauthorized)
-        }
-        let userId = try user.requireID().uuidString
-        let uri = URI(string: "\(ApiEndpoint.users.url)/\(userId)/\(ApiPath.articles.rawValue)")
+        let uri = URI(string: "\(ApiEndpoint.articles.url)")
         return req.client.post(uri, headers: req.headers) { clientRequest in
                 let articlePostData = CreateArticleData(
                     title: data.title,
@@ -315,7 +311,7 @@ struct WebArticlesController: RouteCollection {
             throw Abort(.unauthorized)
         }
         let userId = try user.requireID().uuidString
-        let uri = URI(string: "\(ApiEndpoint.users.url)/\(userId)/\(ApiPath.articles.rawValue)/\(articleId)/\(ApiPath.comments.rawValue)")
+        let uri = URI(string: "\(ApiEndpoint.articles.url)/\(articleId)/\(ApiPath.comments.rawValue)")
         return req.client.post(uri, headers: req.headers) { clientRequest in
             let commentPostData = CreateCommentData(comment: data.comment)
             try clientRequest.content.encode(commentPostData)

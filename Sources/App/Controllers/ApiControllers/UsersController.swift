@@ -16,7 +16,6 @@ struct UsersController: RouteCollection {
         let userId = ApiPath.userId.component
         let login = ApiPath.login.component
         let articles = ApiPath.articles.component
-        let articleId = ApiPath.articleId.component
         let comments = ApiPath.comments.component
 
         let usersRoute = routes.grouped(api, users)
@@ -33,9 +32,7 @@ struct UsersController: RouteCollection {
         usersRoute.get(use: getAllHandler)
         usersRoute.get(userId, use: getHandler)
         tokenAuthGroup.put(userId, use: updateHandler)
-        tokenAuthGroup.post(userId, articles, use: createArticleHandler)
         usersRoute.get(userId, articles, use: getArticlesHandler)
-        tokenAuthGroup.post(userId, articles, articleId, comments, use: createCommentHandler)
         usersRoute.get(userId, comments, use: getCommentsHandler)
     }
 
@@ -90,23 +87,6 @@ struct UsersController: RouteCollection {
         }
     }
 
-    func createArticleHandler(_ req: Request) throws
-    -> EventLoopFuture<Article> {
-        let data = try req.content.decode(CreateArticleData.self)
-        return User.find(req.parameters.get(ApiPath.userId.rawValue), on: req.db)
-            .unwrap(or: Abort(.notFound))
-            .flatMapThrowing { user in
-                return Article(
-                    title: data.title,
-                    description: data.description,
-                    picture: data.picture,
-                    userID: try user.requireID())
-            }
-            .flatMap { article in
-                return article.save(on: req.db).map { article }
-            }
-    }
-
     func getArticlesHandler(_ req: Request)
     -> EventLoopFuture<[Article]> {
         User.find(req.parameters.get(ApiPath.userId.rawValue), on: req.db)
@@ -116,25 +96,6 @@ struct UsersController: RouteCollection {
                     .sort(\.$updatedAt, .descending)
                     .all()
             }
-    }
-
-    func createCommentHandler(_ req: Request) throws
-    -> EventLoopFuture<Comment> {
-        let data = try req.content.decode(CreateCommentData.self)
-        return User.find(req.parameters.get(ApiPath.userId.rawValue), on: req.db)
-            .unwrap(or: Abort(.notFound))
-            .flatMap { user in
-                return Article.find(req.parameters.get(ApiPath.articleId.rawValue), on: req.db)
-                    .unwrap(or: Abort(.notFound))
-                    .flatMapThrowing { article -> EventLoopFuture<Comment> in
-                        let comment = Comment(
-                            description: data.comment,
-                            userID: try user.requireID(),
-                            articleId: try article.requireID())
-                        return comment.save(on: req.db).map { comment }
-                    }
-            }
-            .flatMap { $0 }
     }
 
     func getCommentsHandler(_ req: Request)
@@ -181,16 +142,6 @@ struct UpdateUserData: Content {
             self.email = email
             self.profilePicture = profilePicture
         }
-}
-
-struct CreateArticleData: Content {
-    let title: String
-    let description: String
-    let picture: String?
-}
-
-struct CreateCommentData: Content {
-    let comment: String
 }
 
 struct CommentWithArticle: Content {

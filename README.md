@@ -42,7 +42,7 @@ docker run --name postgres \
 docker run --name redis -p 6379:6379 -d redis
 ```
 > [!NOTE]
-> Replace the environment variables with the ones you set up.
+> Replace the PostgreSQL image environment variables `-e` with the ones you set up.
 > If you didn’t set up the environment variables, leave the default values and these will be used to run the containers.
 
 ### Custom Working Directory
@@ -58,7 +58,7 @@ The root url for the web API is http://127.0.0.1:8080/api.
 
 ## Seed Data
 This project's database is already populated with an initial set of data. The json files containing this data are located under the folder `/Resources/SeedData`.
-This is the data used in the section `API Documentation` below to provide example of CURL requests.
+This is the data used in the section [API Documentation](#api-documentation) below to provide example of CURL requests.
 
 You can also test the consumption of the API through the web Client.  
 Here are two users already created which you can use to authenticate :
@@ -194,7 +194,7 @@ In addition to the comment `description` property this model also provides full 
 ## Routes and Headers
 
 Here is a recap of the different API routes and their related attributes.  
-For further details and specific examples, see `API Documentation` section below.
+For further details and specific examples, see [API Documentation](#api-documentation) section below.
 
 | Method | Route                          | Authorization  | Content-Type         | Body         | Response Content |
 |:------:|--------------------------------|----------------|----------------------|--------------|------------------|
@@ -213,12 +213,12 @@ For further details and specific examples, see `API Documentation` section below
 | GET    | /api/users/{userId}/articles   |                |                      |              | [Article]        |
 | GET    | /api/tags/{tagId}/articles     |                |                      |              | [Article]        |
 | GET    | /api/articles/search?term=     |                |                      |              | [Article]        |
-| POST   | /api/users/{userId}/articles   | Bearer         | application/<br>json | `title`<br>`description`<br>`picture` | Article          |
+| POST   | /api/articles                  | Bearer         | application/<br>json | `title`<br>`description`<br>`picture` | Article          |
 | PUT    | /api/articles/{articleId}      | Bearer         | application/<br>json | `title`<br>`description`<br>`picture` | Article          |
 | DELETE | /api/articles/{articleId}      | Bearer         |                      |              |                  |
 | GET    | /api/users/{userId}/comments   |                |                      |              | [Comment<br>WithArticle] |
 | GET    | /api/articles/{articleId}/comments |                |                      |              | [Comment<br>WithAuthor] |
-| POST   | /api/users/{userId}/<br>articles/{articleId}/comments | Bearer         | application/<br>json | `comment`    | [Comment]        |
+| POST   | /api/articles/{articleId}/comments | Bearer         | application/<br>json | `comment`    | [Comment]        |
 
 ## API Documentation
 
@@ -413,7 +413,7 @@ curl -X GET \
 http://localhost:8080/api/articles/search?term=leaf | jq
 ```
 
-#### POST `/api/users/{userId}/articles`
+#### POST `/api/articles`
 This route allows a specified user to create a new article. It requires the user to be authenticated. When successfully completed, the created article is returned.
 | Authorization  | Content-Type         | Body                     | Response Content |
 |:--------------:|:--------------------:|--------------------------|:----------------:|
@@ -425,7 +425,7 @@ curl -H "Content-Type: application/json" \
 -H "Authorization: Bearer vxd2uFskmIT5OwfdLbqU+Q==" \
 -d '{"title":"This is a title.", "description":"This is a description."}' \
 -X POST \
-http://localhost:8080/api/users/1C36BF09-2E46-47BB-A98C-E29B44FA124D/articles | jq
+http://localhost:8080/api/articles | jq
 ```
 
 #### PUT `/api/articles/{articleId}`
@@ -482,8 +482,8 @@ curl -X GET \
 http://localhost:8080/api/articles/31B9718F-B385-4107-A262-C66FB5DD0F66/comments | jq
 ```
 
-#### POST `/api/users/{userId}/articles/{articleId}/comments`
-This route allows a specified user to post a new comment about a specified article. It requires the user to be authenticated. When successfully completed, the created comment is returned.
+#### POST `/api/articles/{articleId}/comments`
+This route allows a user to post a new comment about a specified article. It requires the user to be authenticated. When successfully completed, the created comment is returned.
 | Authorization  | Content-Type         | Body                     | Response Content |
 |:--------------:|:--------------------:|--------------------------|:----------------:|
 | Bearer         | application/json     | `comment`: `String`&nbsp;&nbsp;(required) |  Comment         |
@@ -495,7 +495,7 @@ curl -H "Content-Type: application/json" \
 -H "Authorization: Bearer vxd2uFskmIT5OwfdLbqU+Q==" \
 -d '{"comment":"This is a comment."}' \
 -X POST \
-http://localhost:8080/api/users/1C36BF09-2E46-47BB-A98C-E29B44FA124D/articles/0CC0F31E-C79A-4ADC-8EB7-9C8191148339/comments | jq
+http://localhost:8080/api/articles/0CC0F31E-C79A-4ADC-8EB7-9C8191148339/comments | jq
 ```
 
 ## Docker Commands
@@ -515,7 +515,7 @@ docker run --name postgres \
   -p 5432:5432 -d postgres
 docker run --name redis -p 6379:6379 -d redis
 ```
-Replace the environment variables if you have set them up or leave the default values.
+Replace the PostgreSQL image environment variables `-e` if you have set them up or leave the default values.
 
 ### Connect to the database
 ```

@@ -25,6 +25,7 @@ struct ArticlesController: RouteCollection {
         let guardAuthMiddleware = User.guardMiddleware()
         let tokenAuthGroup = articlesRoutes.grouped(tokenAuthMiddleware, guardAuthMiddleware)
 
+        tokenAuthGroup.post(use: createHandler)
         articlesRoutes.get(use: getAllHandler)
         articlesRoutes.get(articleId, use: getHandler)
         tokenAuthGroup.put(articleId, use: updateHandler)
@@ -34,6 +35,20 @@ struct ArticlesController: RouteCollection {
         articlesRoutes.get(articleId, tags, use: getTagsHandler)
         tokenAuthGroup.post(articleId, tags, use: updateTagsHandler)
         articlesRoutes.get(articleId, comments, use: getCommentsHandler)
+        tokenAuthGroup.post(articleId, comments, use: createCommentHandler)
+    }
+
+    func createHandler(_ req: Request) throws
+    -> EventLoopFuture<Article> {
+        let data = try req.content.decode(CreateArticleData.self)
+        let user = try req.auth.require(User.self)
+        let article = Article(
+            title: data.title,
+            description: data.description,
+            picture: data.picture,
+            userID: try user.requireID())
+        return article.save(on: req.db).map { article }
+
     }
 
     func getAllHandler(_ req: Request)
@@ -154,6 +169,28 @@ struct ArticlesController: RouteCollection {
                     }
             }
     }
+
+    func createCommentHandler(_ req: Request) throws
+    -> EventLoopFuture<Comment> {
+        let data = try req.content.decode(CreateCommentData.self)
+        return Article.find(req.parameters.get(ApiPath.articleId.rawValue), on: req.db)
+            .unwrap(or: Abort(.notFound))
+            .flatMapThrowing { article -> EventLoopFuture<Comment> in
+                let user = try req.auth.require(User.self)
+                let comment = Comment(
+                    description: data.comment,
+                    userID: try user.requireID(),
+                    articleId: try article.requireID())
+                return comment.save(on: req.db).map { comment }
+            }
+            .flatMap { $0 }
+    }
+}
+
+struct CreateArticleData: Content {
+    let title: String
+    let description: String
+    let picture: String?
 }
 
 struct UpdateArticleData: Content {
@@ -176,4 +213,8 @@ struct CommentWithAuthor: Content {
     let description: String
     let createdAt: Date?
     let author: User.Public
+}
+
+struct CreateCommentData: Content {
+    let comment: String
 }

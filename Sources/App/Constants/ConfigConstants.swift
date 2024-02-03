@@ -35,7 +35,7 @@ struct ConfigConstants {
     //-- MARK: TESTING MODE
     // Postgres default values
     static let defaultTestingPort = 5433
-    static let defaultTestingLocalDatabaseName = "vapor_test"
+    static let defaultTestingLocalDatabaseName = "vapor-test"
 
     //-- MARK: LEAF MARKDOWN CUSTOM TAG
     static let markdown = "markdown"
