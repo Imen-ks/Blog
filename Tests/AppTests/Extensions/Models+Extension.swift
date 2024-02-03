@@ -23,13 +23,25 @@ extension App.User {
             lastName: lastName,
             username: username,
             password: password,
-            email: "\(username)@test.com")
+            email: "\(username)@test.com",
+            profilePicture: "\(username).jpg")
         try user.save(on: database).wait()
         return user
     }
 }
 
 extension App.Tag {
+    static func create(
+        _ name: String = UUID().uuidString,
+        on database: Database
+    ) throws -> Tag {
+        let tag = Tag(
+            name: name)
+        try tag.save(on: database).wait()
+        return tag
+    }
+
+    @discardableResult
     static func add(
         _ name: String = UUID().uuidString,
         to article: Article,
@@ -55,6 +67,7 @@ extension App.Article {
     static func create(
         title: String = UUID().uuidString,
         description: String = UUID().uuidString,
+        picture: String = "\(UUID().uuidString).jpg",
         by user: User? = nil,
         on database: Database
     ) throws -> Article {
@@ -67,8 +80,18 @@ extension App.Article {
         let article = Article(
             title: title,
             description: description,
+            picture: picture,
             userID: articleUser!.id!)
         try article.save(on: database).wait()
+        return article
+    }
+
+    static func add(
+        _ tag: Tag,
+        on database: Database
+    ) throws -> Article {
+        let article = try Article.create(on: database)
+        try article.$tags.attach(tag, on: database).wait()
         return article
     }
 }

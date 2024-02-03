@@ -201,7 +201,7 @@ For further details and specific examples, see [API Documentation](#api-document
 | GET    | /api/users                     |                |                      |              | [User.Public]    |
 | GET    | /api/users/{userId}            |                |                      |              | User.Public      |
 | GET    | /api/articles/{articleId}/user |                |                      |              | User.Public      |
-| POST   | /api/users                     |                | application/<br>json | `firstName`<br>`lastName`<br>`username`<br>`password`<br>`email`<br>`profilePicture` | User.Public      |
+| POST   | /api/users                     |                | application/<br>json | `firstName`<br>`lastName`<br>`username`<br>`password`<br>`email`<br>`profilePicture` | User             |
 | POST   | /api/users/login               | Basic          |                      |              | Token            |
 | PUT    | /api/users/{userId}            | Bearer         | application/<br>json | `firstName`<br>`lastName`<br>`username`<br>`password`<br>`email`<br>`profilePicture` | User.Public      |
 | GET    | /api/tags                      |                |                      |              | [Tag]            |

@@ -32,6 +32,7 @@ final class ArticleTests: XCTestCase {
             let retrievedArticle = try res.content.decode(Article.self)
             XCTAssertEqual(retrievedArticle.title, title)
             XCTAssertEqual(retrievedArticle.description, description)
+            XCTAssertEqual(retrievedArticle.picture, picture)
             XCTAssertEqual(retrievedArticle.$user.id, user.id)
         })
     }
@@ -70,8 +71,9 @@ final class ArticleTests: XCTestCase {
         for _ in 1...randomCount {
             articlesCreated.append(try Article.create(by: user, on: app.db))
         }
-        XCTAssertEqual(randomCount, articlesCreated.count)
+        XCTAssertEqual(randomCount, articlesCreated.compactMap { $0 }.count)
         let uri = "/api/articles/"
+
         try app.test(.GET, uri, afterResponse: { res in
             let retrievedArticles = try res.content.decode([Article].self)
             XCTAssertEqual(retrievedArticles.count, articlesAtStart + articlesCreated.count)
@@ -87,6 +89,7 @@ final class ArticleTests: XCTestCase {
         let article = try Article.create(by: user, on: app.db)
         let articleId = article.id!
         let uri = "/api/articles/\(articleId)"
+
         try app.test(.GET, uri, afterResponse: { res in
             let retrievedArticle = try res.content.decode(Article.self)
             XCTAssertEqual(retrievedArticle.id, articleId)
@@ -95,7 +98,7 @@ final class ArticleTests: XCTestCase {
         })
     }
 
-    func testAuthorizedUserCanUpdateArticle() async throws {
+    func testAuthorCanUpdateArticle() async throws {
         let app = Application(.testing)
         defer { app.shutdown() }
         try await configure(app)
@@ -123,7 +126,6 @@ final class ArticleTests: XCTestCase {
         defer { app.shutdown() }
         try await configure(app)
 
-
         let user = try User.create(on: app.db)
         let article = try Article.create(by: user, on: app.db)
         let articleId = article.id!
@@ -138,7 +140,7 @@ final class ArticleTests: XCTestCase {
         })
     }
 
-    func testUnauthorizedUserCannotUpdateArticle() async throws {
+    func testNotAuthorCannotUpdateArticle() async throws {
         let app = Application(.testing)
         defer { app.shutdown() }
         try await configure(app)
@@ -157,7 +159,7 @@ final class ArticleTests: XCTestCase {
         })
     }
 
-    func testAuthorizedUserCanDeleteArticle() async throws {
+    func testAuthorCanDeleteArticle() async throws {
         let app = Application(.testing)
         defer { app.shutdown() }
         try await configure(app)
@@ -188,7 +190,7 @@ final class ArticleTests: XCTestCase {
         })
     }
 
-    func testUnauthorizedUserCannotDeleteArticle() async throws {
+    func testNotAuthorCannotDeleteArticle() async throws {
         let app = Application(.testing)
         defer { app.shutdown() }
         try await configure(app)
@@ -236,6 +238,7 @@ final class ArticleTests: XCTestCase {
         let article = try Article.create(by: user, on: app.db)
         let articleId = article.id!
         let uri = "/api/articles/\(articleId)/user"
+
         try app.test(.GET, uri, afterResponse: { res in
             let retrievedUser = try res.content.decode(User.Public.self)
             XCTAssertEqual(retrievedUser.id, user.id)
@@ -254,17 +257,18 @@ final class ArticleTests: XCTestCase {
         let randomCount = Int.random(in: 1...100)
         var tagsCreated: [Tag] = []
         for _ in 1...randomCount {
-            try await tagsCreated.append(Tag.add(to: article, on: app.db))
+            tagsCreated.append(try await Tag.add(to: article, on: app.db))
         }
-        XCTAssertEqual(randomCount, tagsCreated.count)
+        XCTAssertEqual(randomCount, tagsCreated.compactMap { $0 }.count)
         let uri = "/api/articles/\(articleId)/tags"
+
         try app.test(.GET, uri, afterResponse: { res in
             let retrievedTags = try res.content.decode([Tag].self)
             XCTAssertEqual(retrievedTags.count, tagsAtStart + tagsCreated.count)
         })
     }
 
-    func testAuthorizedUserCanUpdateArticleTags() async throws {
+    func testAuthorCanUpdateArticleTags() async throws {
         let app = Application(.testing)
         defer { app.shutdown() }
         try await configure(app)
@@ -303,7 +307,7 @@ final class ArticleTests: XCTestCase {
         })
     }
 
-    func testUnauthorizedUserCanUpdateArticleTags() async throws {
+    func testNotAuthorCannotUpdateArticleTags() async throws {
         let app = Application(.testing)
         defer { app.shutdown() }
         try await configure(app)
@@ -332,15 +336,16 @@ final class ArticleTests: XCTestCase {
         let database = await TestDatabase.init(on: app.db)
         let commentsAtStart = try await database.articles.first { $0.id == articleId }!.$comments.get(on: app.db).count
         let randomCount = Int.random(in: 1...100)
-        var comments: [Comment] = []
+        var commentsCreated: [Comment] = []
         for _ in 1...randomCount {
-            comments.append(try Comment.add(by: user, to: article, on: app.db))
+            commentsCreated.append(try Comment.add(by: user, to: article, on: app.db))
         }
-        XCTAssertEqual(randomCount, comments.count)
+        XCTAssertEqual(randomCount, commentsCreated.compactMap { $0 }.count)
         let uri = "/api/articles/\(articleId)/comments"
+
         try app.test(.GET, uri, afterResponse: { res in
             let retrievedComments = try res.content.decode([CommentWithAuthor].self)
-            XCTAssertEqual(retrievedComments.count, commentsAtStart + comments.count)
+            XCTAssertEqual(retrievedComments.count, commentsAtStart + commentsCreated.count)
         })
     }
 
@@ -371,7 +376,6 @@ final class ArticleTests: XCTestCase {
         defer { app.shutdown() }
         try await configure(app)
 
-        let user = try User.create(on: app.db)
         let article = try Article.create(on: app.db)
         let articleId = article.id!
         let comment = UUID().uuidString

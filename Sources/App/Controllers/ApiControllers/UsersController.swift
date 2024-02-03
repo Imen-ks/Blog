@@ -134,7 +134,7 @@ struct UpdateUserData: Content {
         username: String? = nil,
         password: String? = nil,
         email: String? = nil,
-        profilePicture: String?) {
+        profilePicture: String? = nil) {
             self.firstName = firstName
             self.lastName = lastName
             self.username = username
