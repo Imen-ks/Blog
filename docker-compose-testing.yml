@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  blog:
+    depends_on:
+      - postgres
+    build:
+      context: .
+      dockerfile: testing.Dockerfile
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+  postgres:
+    image: "postgres"
+    environment:
+      - POSTGRES_DB=vapor-test
+      - POSTGRES_USER=vapor_username
+      - POSTGRES_PASSWORD=vapor_password
+

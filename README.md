@@ -12,11 +12,12 @@ To be able to run this project, you need to have [Docker](https://www.docker.com
 - [Routes and Headers](#routes-and-headers)
 - [API Documentation](#api-documentation)
 - [Docker Commands](#docker-commands)
+- [Running Unit Tests](#running-unit-tests)
 
 ## Usage and Configuration
 
 ### Open the project
-Download the project and save it on your system. Using the terminal, navigate to the directory where the project is located and run the following command:
+Download the project and save it on your system. Using the terminal, navigate to the directory where the project is located and run the following command :
 ```
 open Package.swift
 ```
@@ -45,15 +46,28 @@ docker run --name redis -p 6379:6379 -d redis
 > Replace the PostgreSQL image environment variables `-e` with the ones you set up.
 > If you didn’t set up the environment variables, leave the default values and these will be used to run the containers.
 
-### Custom Working Directory
-
-You must tell Vapor where the API is running. To do this, set a custom working directory in Xcode.  
-Option-Click the Run button in Xcode to open the scheme editor. On the Options tab, click to enable `Use custom working directory` and select the directory where the `Package.swift` file lives.  
-For more guidance, check [Vapor’s documentation](https://docs.vapor.codes/getting-started/xcode/#custom-working-directory).
-
 ### Run the project
+
+#### In Xcode
+You must first tell Vapor where the API is running. To do this, set a custom working directory in Xcode.  
+Option-Click the Run button in Xcode to open the scheme editor. On the Options tab, click to enable `Use custom working directory` and select the directory where the `Package.swift` file lives.  
+For more guidance, check [Vapor’s documentation](https://docs.vapor.codes/getting-started/xcode/#custom-working-directory).  
 Make sure you have the deployment target set to `My Mac` on Xcode, then build and run the application.  
-After the database migrations are completed, you should see a notice indicating : Server starting on http://127.0.0.1:8080. This is the root url of the web Client. 
+
+#### On Linux
+You first need to have Swift installed in your machine. Check [Vapor's documentation](https://docs.vapor.codes/install/linux/) for instructions.  
+You will then be able to run the following command :
+```
+swift run
+```
+That will build and run the project. The first time you run this it will take some time to fetch and resolve the dependencies.
+
+#### Server address
+On both environments, once running you should see the following in your console:
+```
+[ NOTICE ] Server starting on http://127.0.0.1:8080
+```
+http://127.0.0.1:8080 is the root url of the web Client. 
 The root url for the web API is http://127.0.0.1:8080/api.
 
 ## Seed Data
@@ -262,7 +276,7 @@ http://localhost:8080/api/articles/31B9718F-B385-4107-A262-C66FB5DD0F66/user | j
 This routes allows to create a new user. When successfully completed, the created user is returned.
 | Authorization  | Content-Type         | Body                     | Response Content |
 |:--------------:|:--------------------:|--------------------------|:----------------:|
-| None           | application/json     | `firstName`: `String`&nbsp;&nbsp;(required)<br>`lastName` : `String`&nbsp;&nbsp;(required)<br>`username` : `String`&nbsp;&nbsp;(required)<br>`password` : `String`&nbsp;&nbsp;(required)<br>`email` : `String`&nbsp;&nbsp;(required)<br>`profilePicture` : `String`&nbsp;&nbsp;(optional) | User.Public      |
+| None           | application/json     | `firstName`: `String`&nbsp;&nbsp;(required)<br>`lastName` : `String`&nbsp;&nbsp;(required)<br>`username` : `String`&nbsp;&nbsp;(required)<br>`password` : `String`&nbsp;&nbsp;(required)<br>`email` : `String`&nbsp;&nbsp;(required)<br>`profilePicture` : `String`&nbsp;&nbsp;(optional) | User             |
 
 CURL Example :
 ```
@@ -525,3 +539,27 @@ This will connect you to the running PostgreSQL database inside the container. F
 
 > [!NOTE]
 > You can remove the containers and rerun them to reset the database and restart with the initial database contained in the project.
+
+## Running Unit Tests
+This project contains unit tests that can be run with Xcode. It also includes specific Dockerfile et docker-compose files enabling testing in a Linux environment.
+
+### Xcode
+To run the tests on Xcode, set the required database in Docker :
+```
+docker run --name postgres-test \
+  -e POSTGRES_DB=vapor-test \
+  -e POSTGRES_USER=vapor_username \
+  -e POSTGRES_PASSWORD=vapor_password \
+  -p 5433:5432 -d postgres
+```
+You can then launch the tests with Command-U, or Product &rarr; Test
+
+### Linux
+Run the tests in Linux with the following commands :
+```
+docker-compose -f docker-compose-testing.yml build
+```
+```
+docker-compose -f docker-compose-testing.yml up \
+  --abort-on-container-exit
+```

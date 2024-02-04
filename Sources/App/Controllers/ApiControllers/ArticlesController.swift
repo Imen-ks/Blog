@@ -157,7 +157,7 @@ struct ArticlesController: RouteCollection {
             .flatMapThrowing { comments in
                 return comments
                     .filter {
-                        $0.$article.id.uuidString == req.parameters.get(ApiPath.articleId.rawValue)
+                        $0.$article.id == req.parameters.get(ApiPath.articleId.rawValue)
                     }
                     .sorted { $0.createdAt ?? Date() > $1.createdAt ?? Date() }
                     .map {

@@ -33,6 +33,9 @@ struct ConfigConstants {
     static let herokuDatabaseUrl = "DATABASE_URL"
 
     //-- MARK: TESTING MODE
+    // Docker environement variables
+    static let localDatabasePort = "DATABASE_PORT"
+
     // Postgres default values
     static let defaultTestingPort = 5433
     static let defaultTestingLocalDatabaseName = "vapor-test"

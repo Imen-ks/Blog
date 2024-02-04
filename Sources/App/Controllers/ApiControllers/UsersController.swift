@@ -106,7 +106,7 @@ struct UsersController: RouteCollection {
             .flatMapThrowing { comments in
                 return comments
                     .filter {
-                        $0.$author.id.uuidString == req.parameters.get(ApiPath.userId.rawValue)
+                        $0.$author.id == req.parameters.get(ApiPath.userId.rawValue)
                     }
                     .sorted { $0.createdAt ?? Date() > $1.createdAt ?? Date() }
                     .map {

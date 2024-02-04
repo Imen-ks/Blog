@@ -206,7 +206,7 @@ final class ArticleTests: XCTestCase {
         })
     }
 
-    func testSearchTermReturnsArticlesWithTerm() async throws {
+    func testSearchTermReturnsArticlesContainingTerm() async throws {
         let app = Application(.testing)
         defer { app.shutdown() }
         try await configure(app)

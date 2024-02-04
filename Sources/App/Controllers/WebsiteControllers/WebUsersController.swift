@@ -95,7 +95,7 @@ struct WebUsersController: RouteCollection {
         guard let user = req.auth.get(User.self) else {
             throw Abort(.unauthorized)
         }
-        let userId = try user.requireID().uuidString
+        let userId = try user.requireID()
         let uri = URI(string: "\(ApiEndpoint.users.url)/\(userId)")
         return req.client.get(uri) { _ in }
             .flatMapThrowing { clientResponse -> User.Public in
@@ -183,7 +183,7 @@ struct WebUsersController: RouteCollection {
         guard let user = req.auth.get(User.self) else {
             throw Abort(.unauthorized)
         }
-        let userId = try user.requireID().uuidString
+        let userId = try user.requireID()
         let uri = URI(string: "\(ApiEndpoint.users.url)/\(userId)")
         return req.client.get(uri) { _ in }
             .flatMapThrowing { clientResponse -> User.Public in
@@ -221,7 +221,7 @@ struct WebUsersController: RouteCollection {
         guard let user = req.auth.get(User.self) else {
             throw Abort(.unauthorized)
         }
-        let userId = try user.requireID().uuidString
+        let userId = try user.requireID()
         let uri = URI(string: "\(ApiEndpoint.users.url)/\(userId)")
         return req.client.put(uri, headers: req.headers) { clientRequest in
             try clientRequest.content.encode(updateData)
@@ -251,7 +251,7 @@ struct WebUsersController: RouteCollection {
         guard let user = req.auth.get(User.self) else {
             throw Abort(.unauthorized)
         }
-        let userId = try user.requireID().uuidString
+        let userId = try user.requireID()
         let uri = URI(string: "\(ApiEndpoint.users.url)/\(userId)")
         return req.client.put(uri, headers: req.headers) { clientRequest in
             try clientRequest.content.encode(updateData)
@@ -274,7 +274,7 @@ struct WebUsersController: RouteCollection {
         guard let user = req.auth.get(User.self) else {
             throw Abort(.unauthorized)
         }
-        let userId = try user.requireID().uuidString
+        let userId = try user.requireID()
         let uri = URI(string: "\(ApiEndpoint.users.url)/\(userId)/\(ApiPath.comments.rawValue)")
         return req.client.get(uri, headers: req.headers) { clientRequest in }
             .flatMapThrowing { clientResponse -> [CommentWithArticle] in

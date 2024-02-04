@@ -72,7 +72,11 @@ public func configure(_ app: Application) async throws {
         let databasePort: Int
         if (app.environment == .testing) {
             databaseName = ConfigConstants.defaultTestingLocalDatabaseName
-            databasePort = ConfigConstants.defaultTestingPort
+            if let testPort = Environment.get(ConfigConstants.localDatabasePort) {
+                databasePort = Int(testPort) ?? ConfigConstants.defaultTestingPort
+              } else {
+                databasePort = ConfigConstants.defaultTestingPort
+              }
         } else {
             databaseName = ConfigConstants.defaultDevLocalDatabaseName
             databasePort = ConfigConstants.devPort

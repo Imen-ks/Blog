@@ -11,7 +11,7 @@ import XCTVapor
 
 final class UserTests: XCTestCase {
 
-    func testUserCanRegister() async throws {
+    func testUserCanRegisterHimself() async throws {
         let app = Application(.testing)
         defer { app.shutdown() }
         try await configure(app)
@@ -131,7 +131,7 @@ final class UserTests: XCTestCase {
         })
     }
 
-    func testAuthorisedUserCanUpdateUser() async throws {
+    func testAuthorizedUserCanUpdateUser() async throws {
         let app = Application(.testing)
         defer { app.shutdown() }
         try await configure(app)
