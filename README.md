@@ -2,7 +2,7 @@
 
 ![featured](https://github.com/Imen-ks/Blog/blob/master/Public/Images/featured.png)
 
-This project uses [Vapor 4 framework for macOS](https://docs.vapor.codes/install/macos) to build a fully-featured web app comprising a web API consumed by a web Client.  
+This project uses [Vapor 4 framework](https://docs.vapor.codes/install/macos) to build a fully-featured web app comprising a web API consumed by a web Client.  
 The models are persisted into a PostgreSQL database hosted in a Docker container.  
 To be able to run this project, you need to have [Docker](https://www.docker.com/products/docker-desktop) installed in your system.
 
@@ -13,6 +13,7 @@ To be able to run this project, you need to have [Docker](https://www.docker.com
 - [API Documentation](#api-documentation)
 - [Docker Commands](#docker-commands)
 - [Running Unit Tests](#running-unit-tests)
+- [Heroku Deployment](#heroku-deployment)
 
 ## Usage and Configuration
 
@@ -41,18 +42,18 @@ docker run --name postgres \
 docker run --name redis -p 6379:6379 -d redis
 ```
 > [!NOTE]
-> Replace the PostgreSQL image environment variables `-e` with the ones you set up.
-> If you didn’t set up the environment variables, leave the default values and these will be used to run the containers.
+> Replace the PostgreSQL image environment variables `-e` with the ones you set up. If you didn’t set the environment variables, leave the default values and these will be used to run the containers.
+> The `redis` container is used to set up the Redis database. This database is only used by the web Client to cache sessions and tokens. The Redis configuration sets the hostname from the `REDIS_HOSTNAME` environment variable if it exists or uses the `localhost` default value otherwise .
 
 ### Run the project
 
-#### In Xcode
+#### Xcode
 You must first tell Vapor where the API is running. To do this, set a custom working directory in Xcode.  
 Option-Click the Run button in Xcode to open the scheme editor. On the Options tab, click to enable `Use custom working directory` and select the directory where the `Package.swift` file lives.  
 For more guidance, check [Vapor’s documentation](https://docs.vapor.codes/getting-started/xcode/#custom-working-directory).  
 Make sure you have the deployment target set to `My Mac` on Xcode, then build and run the application.  
 
-#### On Linux
+#### Linux
 You first need to have Swift installed in your machine. Check [Vapor's documentation](https://docs.vapor.codes/install/linux/) for instructions.  
 Once done, you will be able to run the following command :
 ```
