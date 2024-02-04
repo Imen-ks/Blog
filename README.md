@@ -30,8 +30,6 @@ This creates an Xcode project from the Swift package, using Xcode’s support fo
 | `DATABASE_NAME`     | `vapor_database` | Postgres database |
 | `DATABASE_USERNAME` | `vapor_username` | Postgres username |
 | `DATABASE_PASSWORD` | `vapor_password` | Postgres password |
-| `REDIS_HOSTNAME`    | `localhost`      | Redis hostname    |
-| `DATABASE_URL`      | none             | Heroku database   |
 
 ### Run the Docker containers
 ```
@@ -56,7 +54,7 @@ Make sure you have the deployment target set to `My Mac` on Xcode, then build an
 
 #### On Linux
 You first need to have Swift installed in your machine. Check [Vapor's documentation](https://docs.vapor.codes/install/linux/) for instructions.  
-You will then be able to run the following command :
+Once done, you will be able to run the following command :
 ```
 swift run
 ```
@@ -72,7 +70,7 @@ The root url for the web API is http://127.0.0.1:8080/api.
 
 ## Seed Data
 This project's database is already populated with an initial set of data. The json files containing this data are located under the folder `/Resources/SeedData`.
-This is the data used in the section [API Documentation](#api-documentation) below to provide example of CURL requests.
+This is the data used in the section [API Documentation](#api-documentation) below to provide examples of CURL requests.
 
 You can also test the consumption of the API through the web Client.  
 Here are two users already created which you can use to authenticate :
@@ -82,7 +80,7 @@ Here are two users already created which you can use to authenticate :
 | johndoe  | password |
 
 ## Models
-The database stores the following models:
+The database stores the following models :
 * User
 * Token
 * Tag
@@ -90,14 +88,13 @@ The database stores the following models:
 * Comment
   
 Each model has an `id` property which is a unique identifier for the entries in the database.  
-A `createdAt` property is defined for the User, Article & Comment models to store the creation date.  
-In addition, an `updatedAt` property is defined for the Article model to trace the latest updated date of article entries following their edition.
-`createdAt` and `updatedAt` are equivalent if no update is made to the model.  
+Some models define a `createdAt` property and an `updatedAt` property which are automatically set by Fluent to reflect creation time and update time respectively.
+
 Based on these models, the API provides the below response Models to the Client.
 
 ### User
 The User model is returned during the registration process of a new user to enable the authentication process.  
-The `password` property is securely saved in the database using the `Bcrypt` hashing algorithm. Bcrypt also provides a mechanism to verify a password using the password and a hash. This is done during the login process : the password provided in the Authorization header of the request is then verified.  
+The `password` property is securely saved in the database using the `Bcrypt` hashing algorithm. During the login process, the password provided in the request's Authorization header is verified with Bcrypt's verification mechanism.  
 The `profilePicture` property of the model is optional and stores the file name of the user profile picture.  
 `{`  
 &nbsp;&nbsp;&nbsp;&nbsp;`"id"` : `UUID`  
@@ -141,7 +138,7 @@ A tag can be associated with one or many articles. An article can have one or ma
 `}`
 
 ### Article
-The `picture` property of the model is optional and stores the file name of the article picture. 
+The `picture` property of the model is optional and stores the file name of the article picture.  
 The Article model also stores a `user` property providing the unique identifier of the article’s author.  
 `{`  
 &nbsp;&nbsp;&nbsp;&nbsp;`"id"` : `UUID`  
@@ -170,7 +167,7 @@ Along with the `description` property relating to the comment description itself
 `}`  
 
 ### CommentWithArticle
-In addition to the comment `description` property this model also provides full information about the commented article.    
+This Comment model provides full information about the commented article.    
 `{`  
 &nbsp;&nbsp;&nbsp;&nbsp;`"id"` : `UUID`  
 &nbsp;&nbsp;&nbsp;&nbsp;`"description"` : `String`  
@@ -189,7 +186,7 @@ In addition to the comment `description` property this model also provides full 
 `}`
 
 ### CommentWithArticle
-In addition to the comment `description` property this model also provides full information about the comment’s author.  
+This Comment model provides full information about the comment’s author.  
 `{`  
 &nbsp;&nbsp;&nbsp;&nbsp;`"id"` : `UUID`  
 &nbsp;&nbsp;&nbsp;&nbsp;`"description"` : `String`  
@@ -541,7 +538,15 @@ This will connect you to the running PostgreSQL database inside the container. F
 > You can remove the containers and rerun them to reset the database and restart with the initial database contained in the project.
 
 ## Running Unit Tests
-This project contains unit tests that can be run with Xcode. It also includes specific Dockerfile et docker-compose files enabling testing in a Linux environment.
+This project contains unit tests that can be run with Xcode. It also includes specific `testing.Dockerfile` and `docker-compose-testing` files enabling testing in a Linux environment.  
+
+### Environment variables
+| Key                 | Default Value    | Description       |
+|---------------------|------------------|-------------------|
+| `DATABASE_PORT`     | `5433`           | Postgres hostname |
+| `DATABASE_NAME`     | `vapor-test`     | Postgres database |
+| `DATABASE_USERNAME` | `vapor_username` | Postgres username |
+| `DATABASE_PASSWORD` | `vapor_password` | Postgres password |
 
 ### Xcode
 To run the tests on Xcode, set the required database in Docker :
@@ -552,14 +557,18 @@ docker run --name postgres-test \
   -e POSTGRES_PASSWORD=vapor_password \
   -p 5433:5432 -d postgres
 ```
-You can then launch the tests with Command-U, or Product &rarr; Test
+You can then launch the tests with `Command-U`, or Product **&rarr;** Test.
 
 ### Linux
-Run the tests in Linux with the following commands :
+Run the tests in Linux with the following command :
 ```
 docker-compose -f docker-compose-testing.yml build
-```
-```
 docker-compose -f docker-compose-testing.yml up \
   --abort-on-container-exit
 ```
+
+## Heroku Deployment
+The `configure.swift` file contains the configuration for a Heroku PostgreSQL database.
+Heroku uses the `DATABASE_URL` environment variable that will be set during the deployment.  
+This project also contains the `Procfile` required for the deployment.  
+Check [Vapor’s documentation](https://docs.vapor.codes/deploy/heroku) for instructions about Heroku deployment.

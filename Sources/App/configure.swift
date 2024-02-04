@@ -52,6 +52,7 @@ public func configure(_ app: Application) async throws {
     // register routes
     try routes(app)
 
+    // Database Configuration for Heroku Deployment
     func configureDatabase(with dbUrl: String, for app: Application) throws {
         guard let url = URL(string: dbUrl), let host = url.host else {
             return
@@ -67,6 +68,7 @@ public func configure(_ app: Application) async throws {
         app.logger.info("Using Postgres DB \(dbUrl) at \(host)")
     }
 
+    // Local Database Configuration
     func configureLocalDatabase(for app: Application) throws {
         let databaseName: String
         let databasePort: Int
