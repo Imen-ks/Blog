@@ -17,12 +17,9 @@ To be able to run this project, you need to have [Docker](https://www.docker.com
 
 ## Usage and Configuration
 
-### Open the project
-Download the project and save it on your system. Using the terminal, navigate to the directory where the project is located and run the following command :
-```
-open Package.swift
-```
-This creates an Xcode project from the Swift package, using Xcode’s support for Swift Package Manager. It will automatically begin downloading Swift Package Manager dependencies. This can take some time the first time you open a project.
+### Save the template
+Either clone the repo or download, unzip and save the project on your system.  
+Using the terminal, navigate to the directory where the project is located.
 
 ### Environment variables
 | Key                 | Default Value    | Description       |
@@ -43,18 +40,26 @@ docker run --name redis -p 6379:6379 -d redis
 ```
 > [!NOTE]
 > Replace the PostgreSQL image environment variables `-e` with the ones you set up. If you didn’t set the environment variables, leave the default values and these will be used to run the containers.
+> 
 > The `redis` container is used to set up the Redis database. This database is only used by the web Client to cache sessions and tokens. The Redis configuration sets the hostname from the `REDIS_HOSTNAME` environment variable if it exists or uses the `localhost` default value otherwise .
 
 ### Run the project
 
 #### Xcode
-You must first tell Vapor where the API is running. To do this, set a custom working directory in Xcode.  
-Option-Click the Run button in Xcode to open the scheme editor. On the Options tab, click to enable `Use custom working directory` and select the directory where the `Package.swift` file lives.  
-For more guidance, check [Vapor’s documentation](https://docs.vapor.codes/getting-started/xcode/#custom-working-directory).  
+Run the following command :
+```
+open Package.swift
+```
+This creates and opens an Xcode project from the Swift package, using Xcode’s support for Swift Package Manager. It will automatically begin downloading Swift Package Manager dependencies. This can take some time the first time you open a project.
+
+You must then tell Vapor where the API is running. To do this, set a custom working directory.  
+Option-Click the Run button in Xcode to open the scheme editor. On the Options tab, click to enable `Use custom working directory` and select the directory where the `Package.swift` file lives. For more guidance, check [Vapor’s documentation](https://docs.vapor.codes/getting-started/xcode/#custom-working-directory).
+
 Make sure you have the deployment target set to `My Mac` on Xcode, then build and run the application.  
 
 #### Linux
-You first need to have Swift installed in your machine. Check [Vapor's documentation](https://docs.vapor.codes/install/linux/) for instructions.  
+You first need to have Swift installed in your machine. Check [Vapor's documentation](https://docs.vapor.codes/install/linux/) for instructions.
+
 Once done, you will be able to run the following command :
 ```
 swift run
